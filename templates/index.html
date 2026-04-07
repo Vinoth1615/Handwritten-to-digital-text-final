@@ -122,6 +122,24 @@
             background-clip: text;
             color: transparent;
         }
+        .nav-toggle {
+            display: none;
+            width: 48px;
+            height: 48px;
+            border-radius: 16px;
+            border: 1px solid rgba(196, 181, 253, 0.22);
+            background: rgba(12, 16, 32, 0.78);
+            color: #fff;
+            cursor: pointer;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.35rem;
+            transition: 0.25s ease;
+        }
+        .nav-toggle:hover {
+            border-color: rgba(196, 181, 253, 0.52);
+            box-shadow: 0 16px 24px -22px rgba(167, 139, 250, 0.85);
+        }
         .nav-links {
             display: flex;
             gap: 2rem;
@@ -1359,24 +1377,58 @@
             }
             .navbar {
                 padding: 1rem 0;
+                align-items: center;
+                justify-content: space-between;
             }
             .logo {
-                width: 100%;
-                justify-content: center;
+                width: auto;
+                justify-content: flex-start;
             }
             .logo h1 {
                 font-size: 1.45rem;
             }
+            .nav-toggle {
+                display: inline-flex;
+            }
             .nav-links,
             .auth-shell {
                 width: 100%;
-                justify-content: center;
             }
-            .nav-link,
+            .nav-links {
+                display: none;
+                flex-direction: column;
+                align-items: stretch;
+                gap: 1rem;
+                padding: 1rem;
+                border-radius: 1.4rem;
+                background: rgba(10, 14, 29, 0.96);
+                border: 1px solid rgba(196, 181, 253, 0.14);
+                box-shadow: 0 30px 50px -34px rgba(0, 0, 0, 0.9);
+            }
+            .navbar.mobile-open .nav-links {
+                display: flex;
+            }
+            .auth-shell {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 0.8rem;
+            }
+            .nav-link {
+                width: 100%;
+                text-align: left;
+                padding: 0.9rem 1rem;
+                border-radius: 1rem;
+                background: rgba(255, 255, 255, 0.03);
+            }
+            .nav-link::after {
+                display: none;
+            }
+            .nav-link.active {
+                background: rgba(99, 102, 241, 0.14);
+            }
             .btn-primary,
             .btn-auth {
                 width: 100%;
-                text-align: center;
                 justify-content: center;
             }
             .user-pill {
@@ -1735,6 +1787,9 @@
             <div class="logo-icon"><i class="ri-brain-line"></i></div>
             <h1>NeuralNotes AI</h1>
         </div>
+        <button class="nav-toggle" id="navToggleBtn" type="button" aria-label="Open navigation menu" aria-expanded="false">
+            <i class="ri-menu-3-line"></i>
+        </button>
         <div class="nav-links">
             <a class="nav-link active" data-page="home">Home</a>
             <a class="nav-link" data-page="studio">Prediction Studio</a>
@@ -1911,20 +1966,40 @@
 
 <script>
     // Routing
+    const navbar = document.querySelector('.navbar');
+    const navToggleBtn = document.getElementById('navToggleBtn');
     const pages = {
         home: document.getElementById('homePage'),
         studio: document.getElementById('studioPage'),
         solutions: document.getElementById('solutionsPage')
     };
+    function setMobileNavState(open) {
+        navbar.classList.toggle('mobile-open', open);
+        navToggleBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+        navToggleBtn.innerHTML = open
+            ? '<i class="ri-close-line"></i>'
+            : '<i class="ri-menu-3-line"></i>';
+    }
     function showPage(pageId) {
         Object.values(pages).forEach(p => p.classList.remove('active-page'));
         pages[pageId].classList.add('active-page');
         document.querySelectorAll('.nav-link').forEach(link => link.classList.remove('active'));
         const activeLink = document.querySelector(`.nav-link[data-page="${pageId}"]`);
         if(activeLink) activeLink.classList.add('active');
+        if (window.innerWidth <= 680) {
+            setMobileNavState(false);
+        }
     }
+    navToggleBtn.addEventListener('click', () => {
+        setMobileNavState(!navbar.classList.contains('mobile-open'));
+    });
     document.querySelectorAll('.nav-link').forEach(link => {
         link.addEventListener('click', () => showPage(link.getAttribute('data-page')));
+    });
+    window.addEventListener('resize', () => {
+        if (window.innerWidth > 680) {
+            setMobileNavState(false);
+        }
     });
     document.getElementById('studioCtaBtn')?.addEventListener('click', () => showPage('studio'));
     document.getElementById('homeStudioBtn')?.addEventListener('click', () => showPage('studio'));
