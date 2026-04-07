@@ -1,0 +1,2262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>NeuralNotes AI | Enterprise Handwriting Intelligence Platform</title>
+    <!-- Fonts & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.2.0/fonts/remixicon.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', 'Space Grotesk', sans-serif;
+            background: #0a0c18;
+            overflow-x: hidden;
+            color: #ffffff;
+        }
+
+        /* Premium Animated Gradient Background */
+        .premium-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            background: radial-gradient(ellipse at 20% 30%, #0f1225, #04060f);
+            overflow: hidden;
+        }
+        .premium-bg::before {
+            content: '';
+            position: absolute;
+            width: 150%;
+            height: 150%;
+            background: radial-gradient(circle at 70% 40%, rgba(79, 70, 229, 0.12), transparent 60%);
+            animation: slowDrift 20s infinite alternate;
+        }
+        .premium-bg::after {
+            content: '';
+            position: absolute;
+            width: 120%;
+            height: 120%;
+            background: radial-gradient(circle at 30% 80%, rgba(168, 85, 247, 0.08), transparent 70%);
+            animation: slowDrift2 18s infinite alternate;
+        }
+        @keyframes slowDrift {
+            0% { transform: translate(0, 0) scale(1); opacity: 0.4; }
+            100% { transform: translate(-3%, -5%) scale(1.1); opacity: 0.8; }
+        }
+        @keyframes slowDrift2 {
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(4%, 3%) scale(1.15); }
+        }
+
+        .container {
+            position: relative;
+            z-index: 2;
+            max-width: 1440px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        /* Glass Morphism Premium */
+        .glass-premium {
+            background: rgba(12, 16, 32, 0.55);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(99, 102, 241, 0.25);
+            border-radius: 2rem;
+            transition: all 0.4s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+        }
+        .glass-premium:hover {
+            border-color: rgba(99, 102, 241, 0.6);
+            box-shadow: 0 25px 45px -15px rgba(0, 0, 0, 0.4);
+        }
+
+        /* Navigation */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 0;
+            flex-wrap: wrap;
+            gap: 1rem;
+            border-bottom: 1px solid rgba(99, 102, 241, 0.2);
+        }
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .logo-icon {
+            width: 52px;
+            height: 52px;
+            background: linear-gradient(145deg, #4f46e5, #c084fc);
+            border-radius: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            box-shadow: 0 10px 30px -5px #4f46e5;
+        }
+        .logo h1 {
+            font-size: 1.9rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #ffffff, #c4b5fd, #a78bfa);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .nav-link {
+            color: rgba(255,255,255,0.7);
+            text-decoration: none;
+            font-weight: 500;
+            transition: 0.2s;
+            cursor: pointer;
+            position: relative;
+        }
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(90deg, #4f46e5, #c084fc);
+            transition: width 0.3s;
+        }
+        .nav-link:hover::after, .nav-link.active::after {
+            width: 100%;
+        }
+        .nav-link:hover, .nav-link.active {
+            color: #c4b5fd;
+        }
+        .btn-primary {
+            background: linear-gradient(105deg, #4f46e5, #7c3aed);
+            border: none;
+            padding: 0.7rem 1.6rem;
+            border-radius: 40px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(79,70,229,0.4);
+        }
+        .btn-primary:hover {
+            transform: scale(1.03);
+            box-shadow: 0 8px 25px rgba(79,70,229,0.6);
+        }
+        .auth-shell {
+            display: flex;
+            align-items: center;
+            gap: 0.9rem;
+            flex-wrap: wrap;
+        }
+        .user-pill {
+            display: none;
+            align-items: center;
+            gap: 0.7rem;
+            padding: 0.45rem 0.9rem;
+            border-radius: 999px;
+            background: rgba(12, 16, 32, 0.78);
+            border: 1px solid rgba(196, 181, 253, 0.24);
+        }
+        .user-avatar {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #4f46e5, #c084fc);
+            color: #fff;
+            font-weight: 700;
+        }
+        .user-meta {
+            line-height: 1.2;
+        }
+        .user-name {
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: #f5f3ff;
+        }
+        .user-mail {
+            font-size: 0.72rem;
+            color: #b7bed9;
+        }
+        .btn-auth {
+            background: rgba(9, 12, 26, 0.72);
+            color: #fff;
+            border: 1px solid rgba(196, 181, 253, 0.22);
+            padding: 0.7rem 1.2rem;
+            border-radius: 999px;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            font-weight: 600;
+        }
+        .btn-auth:hover {
+            transform: translateY(-1px);
+            border-color: rgba(196, 181, 253, 0.56);
+            box-shadow: 0 16px 24px -20px rgba(167, 139, 250, 0.85);
+        }
+        .auth-modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(2, 4, 13, 0.78);
+            backdrop-filter: blur(16px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 3100;
+            padding: 1.2rem;
+        }
+        .auth-card {
+            width: min(960px, 100%);
+            display: grid;
+            grid-template-columns: 1.05fr 0.95fr;
+            border-radius: 2rem;
+            overflow: hidden;
+            border: 1px solid rgba(196, 181, 253, 0.18);
+            background: linear-gradient(135deg, rgba(11, 15, 31, 0.97), rgba(7, 10, 24, 0.98));
+            box-shadow: 0 40px 80px -40px rgba(0, 0, 0, 0.75);
+        }
+        .auth-showcase {
+            padding: 2.4rem;
+            background:
+                radial-gradient(circle at top left, rgba(79, 70, 229, 0.38), transparent 38%),
+                radial-gradient(circle at bottom right, rgba(14, 165, 233, 0.18), transparent 42%),
+                linear-gradient(180deg, rgba(10, 13, 30, 0.95), rgba(5, 8, 21, 0.98));
+        }
+        .auth-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.45rem;
+            padding: 0.45rem 0.85rem;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.08);
+            color: #ddd6fe;
+            font-size: 0.78rem;
+            margin-bottom: 1.2rem;
+        }
+        .auth-showcase h2 {
+            font-size: 2.2rem;
+            line-height: 1.1;
+            margin-bottom: 0.9rem;
+        }
+        .auth-showcase p {
+            color: #bcc4e3;
+            line-height: 1.7;
+            margin-bottom: 1.5rem;
+        }
+        .auth-feature-list {
+            display: grid;
+            gap: 0.9rem;
+        }
+        .auth-feature {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            padding: 0.85rem 1rem;
+            border-radius: 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(196, 181, 253, 0.12);
+        }
+        .auth-feature i {
+            width: 38px;
+            height: 38px;
+            border-radius: 0.9rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(79, 70, 229, 0.22);
+            color: #ddd6fe;
+        }
+        .auth-panel {
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1.2rem;
+        }
+        .auth-panel-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+        }
+        .auth-switcher {
+            display: inline-flex;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(196, 181, 253, 0.12);
+            border-radius: 999px;
+            padding: 0.25rem;
+        }
+        .auth-tab {
+            background: transparent;
+            border: none;
+            color: #cfd5ef;
+            padding: 0.7rem 1rem;
+            border-radius: 999px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+        .auth-tab.active {
+            background: linear-gradient(135deg, #4f46e5, #7c3aed);
+            color: #fff;
+        }
+        .auth-close {
+            background: rgba(255, 255, 255, 0.05);
+            color: #fff;
+            border: 1px solid rgba(196, 181, 253, 0.14);
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+        .auth-form-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+        }
+        .auth-form-copy {
+            color: #9ea8cf;
+            line-height: 1.6;
+        }
+        .auth-form {
+            display: grid;
+            gap: 0.9rem;
+        }
+        .auth-input-group {
+            display: grid;
+            gap: 0.45rem;
+        }
+        .auth-input-group label {
+            font-size: 0.82rem;
+            color: #ccd3ef;
+            font-weight: 600;
+        }
+        .auth-input {
+            width: 100%;
+            border: 1px solid rgba(196, 181, 253, 0.18);
+            background: rgba(255, 255, 255, 0.04);
+            color: #fff;
+            border-radius: 1rem;
+            padding: 0.95rem 1rem;
+            outline: none;
+        }
+        .auth-input:focus {
+            border-color: rgba(167, 139, 250, 0.72);
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.18);
+        }
+        .auth-submit {
+            border: none;
+            border-radius: 1rem;
+            padding: 0.95rem 1rem;
+            font-weight: 700;
+            color: #fff;
+            cursor: pointer;
+            background: linear-gradient(135deg, #4f46e5, #a855f7);
+            box-shadow: 0 20px 30px -22px rgba(99, 102, 241, 0.9);
+        }
+        .auth-helper {
+            color: #98a3ce;
+            font-size: 0.82rem;
+            text-align: center;
+        }
+        .auth-helper button {
+            border: none;
+            background: none;
+            color: #ddd6fe;
+            cursor: pointer;
+            font-weight: 700;
+        }
+        @media (max-width: 1000px) {
+            .auth-card { grid-template-columns: 1fr; }
+            .auth-showcase { display: none; }
+        }
+
+        /* Routing Panels */
+        .page {
+            display: none;
+            animation: pageReveal 0.6s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+        }
+        .page.active-page {
+            display: block;
+        }
+        @keyframes pageReveal {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Hero Section */
+        .hero {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            padding: 4rem 0 5rem;
+            gap: 3rem;
+        }
+        .hero-left h1 {
+            font-size: 3.8rem;
+            font-weight: 800;
+            line-height: 1.2;
+            margin-bottom: 1.5rem;
+        }
+        .gradient-hero {
+            background: linear-gradient(135deg, #c4b5fd, #a78bfa, #e879f9);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        .hero-stats {
+            display: flex;
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+        .stat-card {
+            background: rgba(99,102,241,0.1);
+            backdrop-filter: blur(8px);
+            padding: 0.8rem 1.5rem;
+            border-radius: 1.2rem;
+            text-align: center;
+            border: 1px solid rgba(99,102,241,0.2);
+        }
+        .stat-card span {
+            font-size: 2rem;
+            font-weight: 800;
+        }
+
+        /* Features Grid */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin: 5rem 0;
+        }
+        .feature-card {
+            background: rgba(20, 26, 48, 0.5);
+            backdrop-filter: blur(12px);
+            border-radius: 1.8rem;
+            padding: 2rem;
+            border: 1px solid rgba(255,255,255,0.05);
+            transition: 0.3s;
+        }
+        .feature-card:hover {
+            transform: translateY(-8px);
+            border-color: #4f46e5;
+        }
+
+        /* ========== PREDICTION STUDIO ========== */
+        .studio-container {
+            background: rgba(5, 8, 22, 0.6);
+            backdrop-filter: blur(20px);
+            border-radius: 2rem;
+            padding: 2rem;
+            margin: 2rem 0;
+            border: 1px solid rgba(99,102,241,0.3);
+        }
+        .studio-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+        }
+        .upload-zone-advanced {
+            background: linear-gradient(135deg, rgba(79,70,229,0.08), rgba(0,0,0,0.3));
+            border-radius: 1.5rem;
+            padding: 2rem;
+            text-align: center;
+            border: 2px dashed #4f46e5;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .upload-zone-advanced:hover {
+            background: rgba(79,70,229,0.15);
+            border-color: #a78bfa;
+        }
+        .format-pills {
+            display: flex;
+            gap: 1rem;
+            margin: 1.5rem 0;
+            flex-wrap: wrap;
+        }
+        .pill-advanced {
+            background: #13172b;
+            padding: 0.6rem 1.3rem;
+            border-radius: 2rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .pill-advanced.active {
+            background: linear-gradient(135deg, #4f46e5, #7c3aed);
+            box-shadow: 0 0 15px #4f46e5;
+        }
+        .preview-advanced {
+            background: #0a0d1c;
+            border-radius: 1.5rem;
+            padding: 1rem;
+            min-height: 400px;
+        }
+        .btn-glow-advanced {
+            background: linear-gradient(95deg, #4f46e5, #a855f7);
+            width: 100%;
+            border: none;
+            padding: 1rem;
+            border-radius: 2rem;
+            font-weight: bold;
+            font-size: 1rem;
+            margin-top: 1rem;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .btn-glow-advanced:hover {
+            transform: scale(1.02);
+            box-shadow: 0 0 20px #4f46e5;
+        }
+
+        /* ========== CENTRALIZED PREDICTION MODAL ========== */
+        .prediction-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(12px);
+            z-index: 3000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            animation: modalFadeIn 0.3s ease;
+        }
+        @keyframes modalFadeIn {
+            from { opacity: 0; backdrop-filter: blur(0px); }
+            to { opacity: 1; backdrop-filter: blur(12px); }
+        }
+        .modal-card {
+            background: linear-gradient(145deg, rgba(15, 20, 40, 0.95), rgba(8, 12, 28, 0.98));
+            backdrop-filter: blur(20px);
+            border-radius: 2rem;
+            padding: 2rem;
+            width: 90%;
+            max-width: 500px;
+            border: 1px solid rgba(99, 102, 241, 0.4);
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5);
+            animation: modalScaleIn 0.4s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+        }
+        @keyframes modalScaleIn {
+            from { transform: scale(0.9); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+        .modal-header {
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+        .modal-icon {
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(135deg, #4f46e5, #c084fc);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+            animation: pulseIcon 1.5s infinite;
+        }
+        @keyframes pulseIcon {
+            0% { box-shadow: 0 0 0 0 rgba(79, 70, 229, 0.7); }
+            70% { box-shadow: 0 0 0 15px rgba(79, 70, 229, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(79, 70, 229, 0); }
+        }
+        .modal-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #fff, #a78bfa);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        .modal-subtitle {
+            font-size: 0.8rem;
+            color: #9aa4c4;
+            margin-top: 0.3rem;
+        }
+        .modal-layers {
+            margin: 1.5rem 0;
+        }
+        .modal-layer-item {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 1rem;
+            padding: 0.8rem 1rem;
+            margin-bottom: 0.8rem;
+            border: 1px solid rgba(99, 102, 241, 0.2);
+            transition: all 0.3s;
+        }
+        .modal-layer-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+        .modal-layer-name {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+        .modal-layer-status {
+            font-size: 0.7rem;
+            padding: 0.2rem 0.7rem;
+            border-radius: 2rem;
+            background: rgba(0, 0, 0, 0.4);
+        }
+        .modal-layer-progress {
+            height: 4px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 2px;
+            overflow: hidden;
+        }
+        .modal-layer-progress-bar {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #4f46e5, #c084fc);
+            border-radius: 2px;
+            transition: width 0.3s ease;
+        }
+        .modal-layer-detail {
+            font-size: 0.7rem;
+            color: #818cf8;
+            margin-top: 0.5rem;
+            display: none;
+        }
+        .modal-footer {
+            text-align: center;
+            margin-top: 1rem;
+            font-size: 0.75rem;
+            color: #6a75a5;
+        }
+
+        /* Premium Output Display */
+        .output-premium {
+            background: linear-gradient(135deg, rgba(15, 20, 40, 0.9), rgba(8, 12, 28, 0.95));
+            border-radius: 1.5rem;
+            padding: 1.5rem;
+            border: 1px solid rgba(99,102,241,0.4);
+            margin-top: 1rem;
+        }
+        .output-header-premium {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(99,102,241,0.2);
+            margin-bottom: 1rem;
+        }
+        .confidence-badge {
+            background: linear-gradient(135deg, #10b98120, #10b98110);
+            padding: 0.3rem 1rem;
+            border-radius: 2rem;
+            border-left: 3px solid #10b981;
+        }
+        .output-text-premium {
+            background: rgba(0,0,0,0.4);
+            border-radius: 1rem;
+            padding: 1.2rem;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.9rem;
+            line-height: 1.6;
+            max-height: 300px;
+            overflow: auto;
+            white-space: pre-wrap;
+        }
+        .output-metrics {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin: 1rem 0;
+        }
+        .translation-studio {
+            margin-top: 1.2rem;
+            padding: 1rem;
+            border-radius: 1.2rem;
+            background: linear-gradient(135deg, rgba(79, 70, 229, 0.16), rgba(168, 85, 247, 0.08));
+            border: 1px solid rgba(167, 139, 250, 0.25);
+        }
+        .translation-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin-bottom: 0.9rem;
+        }
+        .translation-title {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: #ebe7ff;
+        }
+        .translation-subtitle {
+            font-size: 0.8rem;
+            color: #b9bedb;
+            margin-top: 0.25rem;
+        }
+        .translation-badge {
+            padding: 0.35rem 0.85rem;
+            border-radius: 999px;
+            background: rgba(7, 10, 24, 0.45);
+            border: 1px solid rgba(167, 139, 250, 0.2);
+            color: #ddd6fe;
+            font-size: 0.78rem;
+        }
+        .translation-actions {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+        .language-chip {
+            border: 1px solid rgba(167, 139, 250, 0.24);
+            background: rgba(8, 11, 25, 0.58);
+            color: #e5e7ff;
+            border-radius: 999px;
+            padding: 0.65rem 1rem;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.45rem;
+        }
+        .language-chip:hover {
+            transform: translateY(-1px);
+            border-color: rgba(196, 181, 253, 0.6);
+            box-shadow: 0 12px 24px -18px rgba(167, 139, 250, 0.8);
+        }
+        .language-chip.active {
+            background: linear-gradient(135deg, rgba(79, 70, 229, 0.95), rgba(168, 85, 247, 0.85));
+            border-color: transparent;
+            color: #ffffff;
+            box-shadow: 0 18px 30px -20px rgba(99, 102, 241, 0.9);
+        }
+        .language-chip.loading {
+            opacity: 0.7;
+            cursor: wait;
+        }
+        .share-studio {
+            margin-top: 1rem;
+            padding: 1rem;
+            border-radius: 1.2rem;
+            background: linear-gradient(135deg, rgba(14, 165, 233, 0.14), rgba(59, 130, 246, 0.08));
+            border: 1px solid rgba(96, 165, 250, 0.22);
+        }
+        .share-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin-bottom: 0.85rem;
+        }
+        .share-title {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: #e0f2fe;
+        }
+        .share-subtitle {
+            font-size: 0.8rem;
+            color: #bfdbfe;
+            margin-top: 0.25rem;
+        }
+        .share-actions {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+        .share-chip {
+            border: 1px solid rgba(125, 211, 252, 0.24);
+            background: rgba(8, 11, 25, 0.55);
+            color: #ecfeff;
+            border-radius: 999px;
+            padding: 0.65rem 1rem;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.45rem;
+        }
+        .share-chip:hover {
+            transform: translateY(-1px);
+            border-color: rgba(125, 211, 252, 0.6);
+            box-shadow: 0 12px 24px -18px rgba(56, 189, 248, 0.8);
+        }
+        .share-modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(2, 6, 23, 0.78);
+            backdrop-filter: blur(16px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 3200;
+            padding: 1.2rem;
+        }
+        .share-card {
+            width: min(520px, 100%);
+            border-radius: 1.8rem;
+            overflow: hidden;
+            border: 1px solid rgba(125, 211, 252, 0.18);
+            background: linear-gradient(180deg, rgba(10, 13, 28, 0.98), rgba(6, 10, 22, 0.98));
+            box-shadow: 0 40px 80px -40px rgba(0, 0, 0, 0.8);
+        }
+        .share-card-head {
+            padding: 1.3rem 1.4rem 0.7rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+        }
+        .share-card-body {
+            padding: 0.6rem 1.4rem 1.4rem;
+            display: grid;
+            gap: 0.9rem;
+        }
+        .share-close {
+            border: 1px solid rgba(125, 211, 252, 0.14);
+            background: rgba(255,255,255,0.05);
+            color: #fff;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+        .share-input-group {
+            display: grid;
+            gap: 0.45rem;
+        }
+        .share-input-group label {
+            font-size: 0.82rem;
+            color: #dbeafe;
+            font-weight: 600;
+        }
+        .share-input {
+            width: 100%;
+            border: 1px solid rgba(125, 211, 252, 0.18);
+            background: rgba(255,255,255,0.04);
+            color: #fff;
+            border-radius: 1rem;
+            padding: 0.9rem 1rem;
+            outline: none;
+        }
+        .share-input:focus {
+            border-color: rgba(56, 189, 248, 0.68);
+            box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.18);
+        }
+        .share-submit {
+            border: none;
+            border-radius: 1rem;
+            padding: 0.95rem 1rem;
+            font-weight: 700;
+            color: #fff;
+            cursor: pointer;
+            background: linear-gradient(135deg, #0284c7, #2563eb);
+        }
+        .metric-chip {
+            background: rgba(99,102,241,0.15);
+            border-radius: 2rem;
+            padding: 0.3rem 1rem;
+            font-size: 0.8rem;
+        }
+        .toast-premium {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: rgba(20, 25, 55, 0.95);
+            backdrop-filter: blur(20px);
+            border-left: 4px solid #4f46e5;
+            padding: 1rem 1.8rem;
+            border-radius: 1rem;
+            z-index: 3002;
+            transform: translateX(150%);
+            transition: 0.4s;
+            font-weight: 500;
+        }
+        .doc-chat-fab {
+            position: fixed;
+            right: 24px;
+            bottom: 24px;
+            width: 68px;
+            height: 68px;
+            border: none;
+            border-radius: 24px;
+            background: linear-gradient(135deg, #2563eb, #7c3aed 55%, #22c55e);
+            color: #fff;
+            font-size: 1.65rem;
+            cursor: pointer;
+            z-index: 3001;
+            box-shadow: 0 20px 40px -18px rgba(37, 99, 235, 0.85);
+            transition: transform 0.25s ease, box-shadow 0.25s ease;
+        }
+        .doc-chat-fab:hover {
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 28px 48px -18px rgba(124, 58, 237, 0.9);
+        }
+        .doc-chat-panel {
+            position: fixed;
+            right: 24px;
+            bottom: 104px;
+            width: min(420px, calc(100vw - 24px));
+            height: min(680px, calc(100vh - 140px));
+            display: none;
+            flex-direction: column;
+            border-radius: 28px;
+            overflow: hidden;
+            z-index: 3001;
+            border: 1px solid rgba(125, 211, 252, 0.18);
+            background:
+                radial-gradient(circle at top right, rgba(59, 130, 246, 0.18), transparent 34%),
+                radial-gradient(circle at bottom left, rgba(34, 197, 94, 0.12), transparent 30%),
+                linear-gradient(180deg, rgba(7, 11, 24, 0.98), rgba(4, 8, 20, 0.98));
+            box-shadow: 0 40px 80px -32px rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(18px);
+        }
+        .doc-chat-panel.open {
+            display: flex;
+        }
+        .doc-chat-head {
+            padding: 1.2rem 1.2rem 1rem;
+            border-bottom: 1px solid rgba(148, 163, 184, 0.14);
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 1rem;
+            background: linear-gradient(135deg, rgba(37, 99, 235, 0.18), rgba(124, 58, 237, 0.14));
+        }
+        .doc-chat-kicker {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.45rem;
+            padding: 0.38rem 0.7rem;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.08);
+            color: #dbeafe;
+            font-size: 0.74rem;
+            font-weight: 700;
+            letter-spacing: 0.04em;
+        }
+        .doc-chat-title {
+            margin-top: 0.85rem;
+            font-size: 1.08rem;
+            font-weight: 800;
+            color: #f8fbff;
+        }
+        .doc-chat-subtitle {
+            margin-top: 0.35rem;
+            font-size: 0.83rem;
+            line-height: 1.55;
+            color: #bfd0f5;
+        }
+        .doc-chat-close {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 1px solid rgba(191, 219, 254, 0.15);
+            background: rgba(255,255,255,0.05);
+            color: #fff;
+            cursor: pointer;
+        }
+        .doc-chat-body {
+            flex: 1;
+            overflow: auto;
+            padding: 1rem 1rem 0.75rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.85rem;
+        }
+        .doc-chat-empty {
+            padding: 1rem;
+            border-radius: 22px;
+            background: rgba(15, 23, 42, 0.7);
+            border: 1px solid rgba(96, 165, 250, 0.16);
+            color: #d7e6ff;
+            line-height: 1.65;
+        }
+        .doc-chat-suggestions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.6rem;
+            margin-top: 0.8rem;
+        }
+        .doc-chat-suggestion {
+            border: 1px solid rgba(125, 211, 252, 0.18);
+            background: rgba(9, 14, 30, 0.72);
+            color: #e0f2fe;
+            padding: 0.6rem 0.85rem;
+            border-radius: 999px;
+            font-size: 0.78rem;
+            cursor: pointer;
+        }
+        .doc-chat-message {
+            max-width: 88%;
+            padding: 0.9rem 1rem;
+            border-radius: 20px;
+            line-height: 1.65;
+            font-size: 0.9rem;
+            white-space: pre-wrap;
+            word-break: break-word;
+            animation: pageReveal 0.24s ease;
+        }
+        .doc-chat-message.user {
+            align-self: flex-end;
+            background: linear-gradient(135deg, #2563eb, #7c3aed);
+            color: #fff;
+            border-bottom-right-radius: 8px;
+        }
+        .doc-chat-message.assistant {
+            align-self: flex-start;
+            background: rgba(15, 23, 42, 0.86);
+            color: #e6eefc;
+            border: 1px solid rgba(125, 211, 252, 0.12);
+            border-bottom-left-radius: 8px;
+        }
+        .doc-chat-message.meta {
+            align-self: center;
+            background: rgba(148, 163, 184, 0.08);
+            color: #b7c7e7;
+            font-size: 0.78rem;
+            border-radius: 999px;
+            padding: 0.45rem 0.8rem;
+        }
+        .doc-chat-input-wrap {
+            padding: 0.95rem;
+            border-top: 1px solid rgba(148, 163, 184, 0.14);
+            background: rgba(2, 6, 23, 0.92);
+        }
+        .doc-chat-status {
+            min-height: 18px;
+            margin-bottom: 0.65rem;
+            color: #93c5fd;
+            font-size: 0.76rem;
+        }
+        .doc-chat-form {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 0.75rem;
+            align-items: end;
+        }
+        .doc-chat-input {
+            min-height: 86px;
+            resize: none;
+            width: 100%;
+            border-radius: 18px;
+            border: 1px solid rgba(125, 211, 252, 0.16);
+            background: rgba(255,255,255,0.04);
+            color: #fff;
+            padding: 0.95rem 1rem;
+            outline: none;
+            line-height: 1.55;
+        }
+        .doc-chat-input:focus {
+            border-color: rgba(96, 165, 250, 0.72);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.16);
+        }
+        .doc-chat-send {
+            border: none;
+            border-radius: 18px;
+            padding: 0.95rem 1rem;
+            min-width: 108px;
+            background: linear-gradient(135deg, #0ea5e9, #2563eb);
+            color: #fff;
+            font-weight: 700;
+            cursor: pointer;
+        }
+        @media (max-width: 1000px) {
+            .studio-grid { grid-template-columns: 1fr; }
+            .hero-left h1 { font-size: 2.3rem; }
+            .container { padding: 0 1.2rem; }
+        }
+        @media (max-width: 680px) {
+            .toast-premium {
+                right: 16px;
+                left: 16px;
+                bottom: 16px;
+            }
+            .doc-chat-fab {
+                right: 16px;
+                bottom: 16px;
+                width: 62px;
+                height: 62px;
+                border-radius: 22px;
+            }
+            .doc-chat-panel {
+                right: 12px;
+                left: 12px;
+                bottom: 88px;
+                width: auto;
+                height: min(72vh, 620px);
+            }
+            .doc-chat-form {
+                grid-template-columns: 1fr;
+            }
+            .doc-chat-send {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="premium-bg"></div>
+
+<!-- Centralized Prediction Modal -->
+<div class="prediction-modal" id="predictionModal">
+    <div class="modal-card">
+        <div class="modal-header">
+            <div class="modal-icon"><i class="ri-brain-line" style="font-size: 2rem;"></i></div>
+            <div class="modal-title">Neural Prediction in Progress</div>
+            <div class="modal-subtitle">Advanced handwriting recognition engine</div>
+        </div>
+        <div class="modal-layers">
+            <div class="modal-layer-item" id="modalLayer1">
+                <div class="modal-layer-header">
+                    <span class="modal-layer-name"><i class="ri-radar-line"></i> Layer 1: Feature Extraction</span>
+                    <span class="modal-layer-status" id="modalStatus1">Pending</span>
+                </div>
+                <div class="modal-layer-progress"><div class="modal-layer-progress-bar" id="modalProgress1"></div></div>
+                <div class="modal-layer-detail" id="modalDetail1">Analyzing stroke patterns & character boundaries...</div>
+            </div>
+            <div class="modal-layer-item" id="modalLayer2">
+                <div class="modal-layer-header">
+                    <span class="modal-layer-name"><i class="ri-brain-line"></i> Layer 2: Neural Recognition</span>
+                    <span class="modal-layer-status" id="modalStatus2">Pending</span>
+                </div>
+                <div class="modal-layer-progress"><div class="modal-layer-progress-bar" id="modalProgress2"></div></div>
+                <div class="modal-layer-detail" id="modalDetail2">Transformer model processing context & semantics...</div>
+            </div>
+            <div class="modal-layer-item" id="modalLayer3">
+                <div class="modal-layer-header">
+                    <span class="modal-layer-name"><i class="ri-bar-chart-2-line"></i> Layer 3: Confidence Scoring</span>
+                    <span class="modal-layer-status" id="modalStatus3">Pending</span>
+                </div>
+                <div class="modal-layer-progress"><div class="modal-layer-progress-bar" id="modalProgress3"></div></div>
+                <div class="modal-layer-detail" id="modalDetail3">Calculating confidence metrics & formatting output...</div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <i class="ri-cpu-line"></i> AI inference engine • Please wait
+        </div>
+    </div>
+</div>
+
+<div id="toastPremium" class="toast-premium"></div>
+<div class="auth-modal" id="authModal">
+    <div class="auth-card">
+        <div class="auth-showcase">
+            <div class="auth-tag"><i class="ri-shield-star-line"></i> Secure Identity Layer</div>
+            <h2>Save your OCR workspace with a more personal experience.</h2>
+            <p>Create an account to keep translation workflows, document access, and premium OCR actions behind your own secure login.</p>
+            <div class="auth-feature-list">
+                <div class="auth-feature"><i class="ri-lock-password-line"></i><div><strong>Protected access</strong><br><span style="color:#aeb7dc;">Only signed-in users can run OCR and translations.</span></div></div>
+                <div class="auth-feature"><i class="ri-user-heart-line"></i><div><strong>Clean account experience</strong><br><span style="color:#aeb7dc;">Login and signup inside one streamlined panel.</span></div></div>
+                <div class="auth-feature"><i class="ri-sparkling-2-line"></i><div><strong>Workspace continuity</strong><br><span style="color:#aeb7dc;">Stay in the same premium interface while managing your account.</span></div></div>
+            </div>
+        </div>
+        <div class="auth-panel">
+            <div class="auth-panel-top">
+                <div class="auth-switcher">
+                    <button class="auth-tab active" type="button" data-auth-view="login">Login</button>
+                    <button class="auth-tab" type="button" data-auth-view="signup">Sign Up</button>
+                </div>
+                <button class="auth-close" id="authCloseBtn" type="button"><i class="ri-close-line"></i></button>
+            </div>
+            <div>
+                <div class="auth-form-title" id="authFormTitle">Welcome back to NeuralNotes</div>
+                <div class="auth-form-copy" id="authFormCopy">Log in to continue your OCR, analytics, and translation workflow.</div>
+            </div>
+            <form class="auth-form" id="authForm">
+                <div class="auth-input-group" id="fullNameGroup" style="display:none;">
+                    <label for="authFullName">Full Name</label>
+                    <input class="auth-input" id="authFullName" type="text" placeholder="Your full name">
+                </div>
+                <div class="auth-input-group">
+                    <label for="authEmail">Email Address</label>
+                    <input class="auth-input" id="authEmail" type="email" placeholder="name@example.com" required>
+                </div>
+                <div class="auth-input-group">
+                    <label for="authPassword">Password</label>
+                    <input class="auth-input" id="authPassword" type="password" placeholder="At least 8 characters" required>
+                </div>
+                <button class="auth-submit" id="authSubmitBtn" type="submit">Login to Workspace</button>
+            </form>
+            <div class="auth-helper">
+                <span id="authHelperText">New here?</span>
+                <button type="button" id="authSwitchInline">Create an account</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="share-modal" id="shareModal">
+    <div class="share-card">
+        <div class="share-card-head">
+            <div>
+                <div class="share-title" id="shareModalTitle">Send via Email</div>
+                <div class="share-subtitle" id="shareModalSubtitle">Share the currently visible converted document.</div>
+            </div>
+            <button class="share-close" id="shareCloseBtn" type="button"><i class="ri-close-line"></i></button>
+        </div>
+        <div class="share-card-body">
+            <div class="share-input-group" id="shareRecipientGroup">
+                <label for="shareRecipientInput">Recipient</label>
+                <input class="share-input" id="shareRecipientInput" type="text" placeholder="Enter email or WhatsApp number">
+            </div>
+            <div class="share-input-group">
+                <label for="shareMessageInput">Message</label>
+                <textarea class="share-input" id="shareMessageInput" rows="4" placeholder="Optional message for the recipient"></textarea>
+            </div>
+            <button class="share-submit" id="shareSubmitBtn" type="button">Send Document</button>
+        </div>
+    </div>
+</div>
+
+<div class="doc-chat-panel" id="docChatPanel">
+    <div class="doc-chat-head">
+        <div>
+            <div class="doc-chat-kicker"><i class="ri-brain-2-line"></i> Document AI</div>
+            <div class="doc-chat-title">Ask anything about your converted document</div>
+            <div class="doc-chat-subtitle" id="docChatSubtitle">Run OCR prediction, then ask for summaries, definitions, key points, names, or explanations from the extracted text.</div>
+        </div>
+        <button class="doc-chat-close" id="docChatCloseBtn" type="button"><i class="ri-close-line"></i></button>
+    </div>
+    <div class="doc-chat-body" id="docChatBody">
+        <div class="doc-chat-empty" id="docChatEmpty">
+            The assistant reads the converted output and answers only from that document.
+            <div class="doc-chat-suggestions">
+                <button class="doc-chat-suggestion" type="button" data-chat-question="Summarize this document.">Summarize this document</button>
+                <button class="doc-chat-suggestion" type="button" data-chat-question="What are the main topics in this document?">Main topics</button>
+                <button class="doc-chat-suggestion" type="button" data-chat-question="Explain this document in simple words.">Explain simply</button>
+            </div>
+        </div>
+    </div>
+    <div class="doc-chat-input-wrap">
+        <div class="doc-chat-status" id="docChatStatus">Assistant ready when a converted document is available.</div>
+        <form class="doc-chat-form" id="docChatForm">
+            <textarea class="doc-chat-input" id="docChatInput" placeholder="Ask about the converted document. Example: What is Tamil Nadu according to this text?"></textarea>
+            <button class="doc-chat-send" id="docChatSendBtn" type="submit">Ask AI</button>
+        </form>
+    </div>
+</div>
+<button class="doc-chat-fab" id="docChatFab" type="button" title="Open document assistant">
+    <i class="ri-message-3-line"></i>
+</button>
+
+<div class="container">
+    <!-- Navigation -->
+    <div class="navbar">
+        <div class="logo">
+            <div class="logo-icon"><i class="ri-brain-line"></i></div>
+            <h1>NeuralNotes AI</h1>
+        </div>
+        <div class="nav-links">
+            <a class="nav-link active" data-page="home">Home</a>
+            <a class="nav-link" data-page="studio">Prediction Studio</a>
+            <a class="nav-link" data-page="solutions">Solutions</a>
+            <div class="auth-shell">
+                <div class="user-pill" id="userPill">
+                    <div class="user-avatar" id="userAvatar">N</div>
+                    <div class="user-meta">
+                        <div class="user-name" id="userName">Neural User</div>
+                        <div class="user-mail" id="userEmail">user@example.com</div>
+                    </div>
+                </div>
+                <button class="btn-auth" id="authTriggerBtn"><i class="ri-user-smile-line"></i> Login / Signup</button>
+                <button class="btn-primary" id="studioCtaBtn"><i class="ri-cloud-upload-line"></i> Launch Studio</button>
+                <button class="btn-auth" id="logoutBtn" style="display:none;"><i class="ri-logout-box-r-line"></i> Logout</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- HOME PAGE -->
+    <div id="homePage" class="page active-page">
+        <div class="hero">
+            <div class="hero-left">
+                <div style="display:inline-flex; gap:8px; background:rgba(99,102,241,0.2); border-radius:40px; padding:0.4rem 1.2rem; margin-bottom:1.5rem;">
+                    <i class="ri-flashlight-fill"></i> Next-gen Handwriting Intelligence v4.0
+                </div>
+                <h1>Transform handwritten notes into <span class="gradient-hero">digital intelligence</span> with 99.4% accuracy</h1>
+                <p style="color: #a5b0d0; font-size: 1.1rem;">Advanced transformer architecture deciphers cursive, mathematical notation, and historical manuscripts in milliseconds.</p>
+                <div class="hero-stats">
+                    <div class="stat-card"><span>99.4%</span><br><small>ACCURACY</small></div>
+                    <div class="stat-card"><span>12+</span><br><small>FORMATS</small></div>
+                    <div class="stat-card"><span>&lt;0.4s</span><br><small>PER PAGE</small></div>
+                </div>
+                <div style="margin-top: 2rem;">
+                    <button class="btn-primary" id="homeStudioBtn"><i class="ri-flask-line"></i> Start Analysis</button>
+                </div>
+            </div>
+            <div style="flex:0.8; text-align:center;">
+                <i class="ri-file-pdf-line" style="font-size: 8rem; color:#4f46e5; filter:drop-shadow(0 0 30px #4f46e5);"></i>
+            </div>
+        </div>
+
+        <div class="features-grid">
+            <div class="feature-card"><i class="ri-flashlight-line" style="font-size:2.5rem;"></i><h3 style="margin:1rem 0;">Lightning Fast</h3><p>Process entire documents in under 2 seconds per page.</p></div>
+            <div class="feature-card"><i class="ri-shield-keyhole-line" style="font-size:2.5rem;"></i><h3>Enterprise Security</h3><p>AES-256 encryption, HIPAA compliant, auto-delete policy.</p></div>
+            <div class="feature-card"><i class="ri-bar-chart-2-line" style="font-size:2.5rem;"></i><h3>Smart Analytics</h3><p>Confidence scores, character frequency, readability metrics.</p></div>
+            <div class="feature-card"><i class="ri-stack-line" style="font-size:2.5rem;"></i><h3>Batch Processing</h3><p>Upload multiple documents for bulk analysis.</p></div>
+        </div>
+
+        <div class="glass-premium" style="padding:2rem; text-align:center; margin:2rem 0;">
+            <h3>Trusted by 5,000+ institutions worldwide</h3>
+            <div style="display:flex; justify-content:center; gap:2rem; margin-top:1rem; flex-wrap:wrap;">
+                <span><i class="ri-hospital-line"></i> Healthcare</span>
+                <span><i class="ri-bank-line"></i> Legal</span>
+                <span><i class="ri-history-line"></i> Archives</span>
+                <span><i class="ri-graduation-cap-line"></i> Education</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- PREDICTION STUDIO PAGE -->
+    <div id="studioPage" class="page">
+        <div class="studio-container">
+            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; margin-bottom:1.5rem;">
+                <h2><i class="ri-microscope-line"></i> Neural Prediction Studio</h2>
+                <div style="background:rgba(16,185,129,0.2); padding:0.3rem 1rem; border-radius:2rem;"><i class="ri-circle-fill" style="font-size:0.6rem; color:#10b981;"></i> Ready for inference</div>
+            </div>
+            <div class="studio-grid">
+                <div>
+                    <div class="upload-zone-advanced" id="studioUploadZone">
+                        <i class="ri-upload-cloud-2-line" style="font-size:3rem; color:#a78bfa;"></i>
+                        <h3 style="margin:0.8rem 0;">Upload handwritten document</h3>
+                        <p>PDF, JPG, PNG supported</p>
+                        <input type="file" id="pdfStudioInput" accept=".pdf,.jpg,.png,.jpeg" style="display:none;">
+                    </div>
+                    <div id="studioFileMeta" style="margin-top:1rem; background:#0c1022; border-radius:2rem; padding:0.7rem 1rem; display:none; justify-content:space-between;">
+                        <span><i class="ri-file-pdf-line"></i> <span id="studioFileName"></span> (<span id="studioFileSize"></span>)</span>
+                        <button id="clearStudioFileBtn" style="background:none; border:none; color:#f87171; cursor:pointer;"><i class="ri-close-circle-line"></i></button>
+                    </div>
+                    <div class="format-pills">
+                        <div class="pill-advanced" data-format="Plain Text">📄 Plain Text</div>
+                        <div class="pill-advanced" data-format="Markdown">📝 Markdown</div>
+                        <div class="pill-advanced" data-format="LaTeX">📐 LaTeX</div>
+                    </div>
+                    <button class="btn-glow-advanced" id="studioProcessTrigger"><i class="ri-flask-line"></i> Run Neural Prediction</button>
+                </div>
+                <div class="preview-advanced">
+                    <div style="display:flex; justify-content:space-between; margin-bottom:0.8rem;">
+                        <span><i class="ri-image-edit-line"></i> Document preview</span>
+                        <div><button id="studioPrevPage" style="background:#181e32; border:none; padding:0.2rem 0.7rem; border-radius:1rem;"><i class="ri-arrow-left-s-line"></i></button>
+                        <span id="studioPageIndicator">Page 1 / 1</span>
+                        <button id="studioNextPage" style="background:#181e32; border:none; padding:0.2rem 0.7rem; border-radius:1rem;"><i class="ri-arrow-right-s-line"></i></button></div>
+                    </div>
+                    <div id="studioPreviewImg" style="min-height:280px; display:flex; align-items:center; justify-content:center; background:#050811; border-radius:1rem;">
+                        <div style="text-align:center;"><i class="ri-image-add-line" style="font-size:2rem;"></i><br>No document loaded</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Premium Output Display -->
+            <div id="studioResultPanel" style="display:none; margin-top:2rem;">
+                <div class="output-premium">
+                    <div class="output-header-premium">
+                        <h3><i class="ri-file-copy-line"></i> Extracted Content</h3>
+                        <div class="confidence-badge" id="confidenceBadge">Confidence: 98.7%</div>
+                    </div>
+                    <div class="output-text-premium" id="studioOutputText"></div>
+                    <div class="output-metrics" id="outputMetrics">
+                        <span class="metric-chip"><i class="ri-font-size"></i> Characters: --</span>
+                        <span class="metric-chip"><i class="ri-text"></i> Words: --</span>
+                        <span class="metric-chip"><i class="ri-timer-line"></i> Processing time: --</span>
+                    </div>
+                    <div class="translation-studio">
+                        <div class="translation-header">
+                            <div>
+                                <div class="translation-title"><i class="ri-translate-2"></i> Multilingual Conversion Studio</div>
+                                <div class="translation-subtitle">Convert the digital output instantly after OCR prediction.</div>
+                            </div>
+                            <div class="translation-badge" id="translationStatus">Viewing: Original OCR</div>
+                        </div>
+                        <div class="translation-actions" id="translationActions">
+                            <button class="language-chip active" type="button" data-language="original"><i class="ri-file-text-line"></i> Original</button>
+                            <button class="language-chip" type="button" data-language="english"><i class="ri-global-line"></i> English</button>
+                            <button class="language-chip" type="button" data-language="hindi"><i class="ri-chat-voice-line"></i> Hindi</button>
+                            <button class="language-chip" type="button" data-language="tamil"><i class="ri-translate"></i> Tamil</button>
+                            <button class="language-chip" type="button" data-language="telugu"><i class="ri-translate"></i> Telugu</button>
+                            <button class="language-chip" type="button" data-language="malayalam"><i class="ri-translate"></i> Malayalam</button>
+                        </div>
+                    </div>
+                    <div class="share-studio">
+                        <div class="share-header">
+                            <div>
+                                <div class="share-title"><i class="ri-share-forward-line"></i> Delivery Studio</div>
+                                <div class="share-subtitle">Send the currently visible converted document through email or WhatsApp.</div>
+                            </div>
+                        </div>
+                        <div class="share-actions">
+                            <button class="share-chip" id="shareEmailBtn" type="button"><i class="ri-mail-send-line"></i> Send to Email</button>
+                            <button class="share-chip" id="shareWhatsAppBtn" type="button"><i class="ri-whatsapp-line"></i> Send to WhatsApp</button>
+                        </div>
+                    </div>
+                    <div style="display:flex; gap:1rem; justify-content:flex-end; margin-top:1rem;">
+                        <button id="studioCopyBtn" style="background:#1e2038; border:1px solid #2d2f4e; border-radius:2rem; padding:0.5rem 1.2rem; cursor:pointer;"><i class="ri-clipboard-line"></i> Copy</button>
+                        <button id="studioDownloadBtn" style="background:#1e2038; border:1px solid #2d2f4e; border-radius:2rem; padding:0.5rem 1.2rem; cursor:pointer;"><i class="ri-download-line"></i> Download</button>
+                    </div>
+                </div>
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin-top:1.5rem;">
+                    <canvas id="studioCharCanvas" style="max-height:200px; background:rgba(0,0,0,0.3); border-radius:1rem; padding:0.5rem;"></canvas>
+                    <canvas id="studioWordCanvas" style="max-height:200px; background:rgba(0,0,0,0.3); border-radius:1rem; padding:0.5rem;"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SOLUTIONS PAGE -->
+    <div id="solutionsPage" class="page">
+        <div class="glass-premium" style="padding:3rem; text-align:center; margin:2rem 0;">
+            <h2 style="font-size:2.5rem;">Enterprise Solutions</h2>
+            <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(250px,1fr)); gap:2rem; margin-top:3rem;">
+                <div><i class="ri-hospital-line" style="font-size:2.5rem;"></i><h3>Healthcare</h3><p>Medical notes & prescription digitization</p></div>
+                <div><i class="ri-bank-line" style="font-size:2.5rem;"></i><h3>Legal</h3><p>Handwritten depositions & evidence</p></div>
+                <div><i class="ri-history-line" style="font-size:2.5rem;"></i><h3>Archives</h3><p>Historical manuscript preservation</p></div>
+                <div><i class="ri-graduation-cap-line" style="font-size:2.5rem;"></i><h3>Education</h3><p>Automated exam grading</p></div>
+            </div>
+        </div>
+    </div>
+
+    <div style="text-align:center; margin:3rem 0 2rem; color:#6a75a5;">© 2026 NeuralNotes AI — Redefining handwritten intelligence</div>
+</div>
+
+<script>
+    // Routing
+    const pages = {
+        home: document.getElementById('homePage'),
+        studio: document.getElementById('studioPage'),
+        solutions: document.getElementById('solutionsPage')
+    };
+    function showPage(pageId) {
+        Object.values(pages).forEach(p => p.classList.remove('active-page'));
+        pages[pageId].classList.add('active-page');
+        document.querySelectorAll('.nav-link').forEach(link => link.classList.remove('active'));
+        const activeLink = document.querySelector(`.nav-link[data-page="${pageId}"]`);
+        if(activeLink) activeLink.classList.add('active');
+    }
+    document.querySelectorAll('.nav-link').forEach(link => {
+        link.addEventListener('click', () => showPage(link.getAttribute('data-page')));
+    });
+    document.getElementById('studioCtaBtn')?.addEventListener('click', () => showPage('studio'));
+    document.getElementById('homeStudioBtn')?.addEventListener('click', () => showPage('studio'));
+
+    // Studio Logic with Modal Animation
+    let currentFile = null;
+    let selectedFormat = "Plain Text";
+    document.querySelectorAll('.pill-advanced').forEach(p => {
+        p.addEventListener('click', () => {
+            document.querySelectorAll('.pill-advanced').forEach(pi => pi.classList.remove('active'));
+            p.classList.add('active');
+            selectedFormat = p.getAttribute('data-format');
+        });
+    });
+    document.querySelector('.pill-advanced').classList.add('active');
+
+    const uploadZone = document.getElementById('studioUploadZone');
+    const fileInput = document.getElementById('pdfStudioInput');
+    const fileMeta = document.getElementById('studioFileMeta');
+    const fileNameSpan = document.getElementById('studioFileName');
+    const fileSizeSpan = document.getElementById('studioFileSize');
+    const clearBtn = document.getElementById('clearStudioFileBtn');
+    const processBtn = document.getElementById('studioProcessTrigger');
+    const previewDiv = document.getElementById('studioPreviewImg');
+    const resultPanel = document.getElementById('studioResultPanel');
+    const outputDiv = document.getElementById('studioOutputText');
+    const copyBtn = document.getElementById('studioCopyBtn');
+    const downloadBtn = document.getElementById('studioDownloadBtn');
+    const confidenceBadge = document.getElementById('confidenceBadge');
+    const outputMetrics = document.getElementById('outputMetrics');
+    const translationStatus = document.getElementById('translationStatus');
+    const translationButtons = Array.from(document.querySelectorAll('.language-chip'));
+    const shareModal = document.getElementById('shareModal');
+    const shareCloseBtn = document.getElementById('shareCloseBtn');
+    const shareModalTitle = document.getElementById('shareModalTitle');
+    const shareModalSubtitle = document.getElementById('shareModalSubtitle');
+    const shareRecipientInput = document.getElementById('shareRecipientInput');
+    const shareMessageInput = document.getElementById('shareMessageInput');
+    const shareSubmitBtn = document.getElementById('shareSubmitBtn');
+    const shareEmailBtn = document.getElementById('shareEmailBtn');
+    const shareWhatsAppBtn = document.getElementById('shareWhatsAppBtn');
+    const authModal = document.getElementById('authModal');
+    const authTriggerBtn = document.getElementById('authTriggerBtn');
+    const authCloseBtn = document.getElementById('authCloseBtn');
+    const authTabs = Array.from(document.querySelectorAll('.auth-tab'));
+    const authForm = document.getElementById('authForm');
+    const authFormTitle = document.getElementById('authFormTitle');
+    const authFormCopy = document.getElementById('authFormCopy');
+    const authSubmitBtn = document.getElementById('authSubmitBtn');
+    const authHelperText = document.getElementById('authHelperText');
+    const authSwitchInline = document.getElementById('authSwitchInline');
+    const fullNameGroup = document.getElementById('fullNameGroup');
+    const authFullName = document.getElementById('authFullName');
+    const authEmail = document.getElementById('authEmail');
+    const authPassword = document.getElementById('authPassword');
+    const userPill = document.getElementById('userPill');
+    const userAvatar = document.getElementById('userAvatar');
+    const userName = document.getElementById('userName');
+    const userEmail = document.getElementById('userEmail');
+    const logoutBtn = document.getElementById('logoutBtn');
+    const docChatFab = document.getElementById('docChatFab');
+    const docChatPanel = document.getElementById('docChatPanel');
+    const docChatCloseBtn = document.getElementById('docChatCloseBtn');
+    const docChatBody = document.getElementById('docChatBody');
+    const docChatEmpty = document.getElementById('docChatEmpty');
+    const docChatSubtitle = document.getElementById('docChatSubtitle');
+    const docChatStatus = document.getElementById('docChatStatus');
+    const docChatForm = document.getElementById('docChatForm');
+    const docChatInput = document.getElementById('docChatInput');
+    const docChatSendBtn = document.getElementById('docChatSendBtn');
+    const docChatSuggestionButtons = Array.from(document.querySelectorAll('.doc-chat-suggestion'));
+    let charChart, wordChart;
+    let lastSessionId = null;
+    let outputVersions = { original: '' };
+    let analyticsByLanguage = {};
+    let activeLanguage = 'original';
+    let currentUser = null;
+    let authView = 'login';
+    let shareMode = 'email';
+    let documentChatHistory = [];
+    let isDocumentChatLoading = false;
+
+    // Modal elements
+    const modal = document.getElementById('predictionModal');
+    const modalStatus1 = document.getElementById('modalStatus1');
+    const modalStatus2 = document.getElementById('modalStatus2');
+    const modalStatus3 = document.getElementById('modalStatus3');
+    const modalProgress1 = document.getElementById('modalProgress1');
+    const modalProgress2 = document.getElementById('modalProgress2');
+    const modalProgress3 = document.getElementById('modalProgress3');
+    const modalDetail1 = document.getElementById('modalDetail1');
+    const modalDetail2 = document.getElementById('modalDetail2');
+    const modalDetail3 = document.getElementById('modalDetail3');
+
+    function resetModalLayers() {
+        modalStatus1.innerText = 'Pending';
+        modalStatus2.innerText = 'Pending';
+        modalStatus3.innerText = 'Pending';
+        modalStatus1.style.color = '#9aa4c4';
+        modalStatus2.style.color = '#9aa4c4';
+        modalStatus3.style.color = '#9aa4c4';
+        modalProgress1.style.width = '0%';
+        modalProgress2.style.width = '0%';
+        modalProgress3.style.width = '0%';
+        modalDetail1.style.display = 'none';
+        modalDetail2.style.display = 'none';
+        modalDetail3.style.display = 'none';
+    }
+
+    async function animateModalLayer(layerNum, duration, statusText, detailText) {
+        const statusElem = layerNum === 1 ? modalStatus1 : (layerNum === 2 ? modalStatus2 : modalStatus3);
+        const progressElem = layerNum === 1 ? modalProgress1 : (layerNum === 2 ? modalProgress2 : modalProgress3);
+        const detailElem = layerNum === 1 ? modalDetail1 : (layerNum === 2 ? modalDetail2 : modalDetail3);
+        const totalSteps = 40;
+
+        statusElem.innerText = statusText;
+        statusElem.style.color = '#fbbf24';
+        detailElem.innerText = detailText;
+        detailElem.style.display = 'block';
+
+        for (let step = 0; step <= totalSteps; step += 1) {
+            await new Promise(r => setTimeout(r, duration / totalSteps));
+            progressElem.style.width = `${Math.round((step / totalSteps) * 100)}%`;
+        }
+
+        statusElem.innerText = 'Complete';
+        statusElem.style.color = '#10b981';
+        await new Promise(r => setTimeout(r, 320));
+    }
+
+    function setProcessingState(active) {
+        processBtn.disabled = active;
+        processBtn.style.opacity = active ? '0.65' : '1';
+        processBtn.style.cursor = active ? 'not-allowed' : 'pointer';
+    }
+
+    function openAuthModal(view = 'login') {
+        setAuthView(view);
+        authModal.style.display = 'flex';
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeAuthModal() {
+        authModal.style.display = 'none';
+        document.body.style.overflow = '';
+    }
+
+    function setAuthView(view) {
+        authView = view;
+        const isSignup = view === 'signup';
+        authTabs.forEach(tab => tab.classList.toggle('active', tab.dataset.authView === view));
+        fullNameGroup.style.display = isSignup ? 'grid' : 'none';
+        authFormTitle.innerText = isSignup ? 'Create your NeuralNotes account' : 'Welcome back to NeuralNotes';
+        authFormCopy.innerText = isSignup
+            ? 'Open a fresh workspace with secure OCR access, translation power, and a premium identity layer.'
+            : 'Log in to continue your OCR, analytics, and translation workflow.';
+        authSubmitBtn.innerText = isSignup ? 'Create Account' : 'Login to Workspace';
+        authHelperText.innerText = isSignup ? 'Already have an account?' : 'New here?';
+        authSwitchInline.innerText = isSignup ? 'Login instead' : 'Create an account';
+    }
+
+    function updateAuthUI(user) {
+        currentUser = user;
+        const isLoggedIn = Boolean(user);
+        userPill.style.display = isLoggedIn ? 'flex' : 'none';
+        logoutBtn.style.display = isLoggedIn ? 'inline-flex' : 'none';
+        authTriggerBtn.style.display = isLoggedIn ? 'none' : 'inline-flex';
+
+        if (isLoggedIn) {
+            userName.innerText = user.full_name;
+            userEmail.innerText = user.email;
+            userAvatar.innerText = (user.full_name || 'N').trim().charAt(0).toUpperCase();
+        }
+    }
+
+    async function refreshAuthState() {
+        try {
+            const response = await fetch('/api/auth/status');
+            const data = await response.json();
+            updateAuthUI(data.user || null);
+        } catch (error) {
+            console.error('Auth status failed:', error);
+        }
+    }
+
+    function requireLogin() {
+        if (currentUser) {
+            return true;
+        }
+        showToast('Please log in to use OCR and translation features.', true);
+        openAuthModal('login');
+        return false;
+    }
+
+    function getCurrentDocumentText() {
+        return (outputVersions[activeLanguage] || outputVersions.original || '').trim();
+    }
+
+    function updateDocumentChatStatus(message) {
+        docChatStatus.innerText = message;
+    }
+
+    function setDocumentChatLoading(loading) {
+        isDocumentChatLoading = loading;
+        docChatSendBtn.disabled = loading;
+        docChatSendBtn.style.opacity = loading ? '0.72' : '1';
+        docChatInput.disabled = loading;
+        updateDocumentChatStatus(
+            loading
+                ? `Analyzing ${getActiveOutputLabel()} document view...`
+                : (getCurrentDocumentText()
+                    ? `Ready to answer from ${getActiveOutputLabel()}.`
+                    : 'Assistant ready when a converted document is available.')
+        );
+    }
+
+    function clearDocumentChatMessages() {
+        documentChatHistory = [];
+        docChatBody.innerHTML = '';
+        docChatBody.appendChild(docChatEmpty);
+        docChatEmpty.style.display = 'block';
+        updateDocumentChatStatus('Assistant ready when a converted document is available.');
+    }
+
+    function appendChatMessage(role, content) {
+        if (docChatEmpty.parentElement === docChatBody) {
+            docChatEmpty.style.display = 'none';
+        }
+
+        const bubble = document.createElement('div');
+        bubble.className = `doc-chat-message ${role}`;
+        bubble.innerText = content;
+        docChatBody.appendChild(bubble);
+        docChatBody.scrollTop = docChatBody.scrollHeight;
+    }
+
+    function syncDocumentChatContext() {
+        const hasDocument = Boolean(getCurrentDocumentText());
+        docChatSubtitle.innerText = hasDocument
+            ? `The assistant is currently reading the ${getActiveOutputLabel()} view of your converted output.`
+            : 'Run OCR prediction, then ask for summaries, definitions, key points, names, or explanations from the extracted text.';
+
+        if (!isDocumentChatLoading) {
+            updateDocumentChatStatus(
+                hasDocument
+                    ? `Ready to answer from ${getActiveOutputLabel()}.`
+                    : 'Assistant ready when a converted document is available.'
+            );
+        }
+    }
+
+    function openDocumentChat() {
+        if (!requireLogin()) { return; }
+        docChatPanel.classList.add('open');
+        syncDocumentChatContext();
+        setTimeout(() => docChatInput.focus(), 60);
+    }
+
+    function closeDocumentChat() {
+        docChatPanel.classList.remove('open');
+    }
+
+    async function submitDocumentQuestion(questionText) {
+        if (!requireLogin()) { return; }
+
+        const question = questionText.trim();
+        const documentText = getCurrentDocumentText();
+        const languageLabel = getActiveOutputLabel();
+
+        if (!documentText) {
+            showToast('Run OCR prediction before using the document assistant.', true);
+            updateDocumentChatStatus('No converted document is available yet.');
+            return;
+        }
+
+        if (!question) {
+            showToast('Please enter a question for the document assistant.', true);
+            return;
+        }
+
+        appendChatMessage('user', question);
+        documentChatHistory.push({ role: 'user', content: question });
+        docChatInput.value = '';
+
+        const thinkingNode = document.createElement('div');
+        thinkingNode.className = 'doc-chat-message meta';
+        thinkingNode.innerText = 'NeuralNotes is reading the document...';
+        docChatBody.appendChild(thinkingNode);
+        docChatBody.scrollTop = docChatBody.scrollHeight;
+
+        try {
+            setDocumentChatLoading(true);
+
+            const response = await fetch('/api/document-chat', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    document_text: documentText,
+                    language_label: languageLabel,
+                    question,
+                    chat_history: documentChatHistory.slice(-8)
+                })
+            });
+
+            const data = await response.json();
+            thinkingNode.remove();
+
+            if (!response.ok || !data.success) {
+                throw new Error(data.error || 'Document chat failed');
+            }
+
+            appendChatMessage('assistant', data.answer);
+            documentChatHistory.push({ role: 'assistant', content: data.answer });
+            updateDocumentChatStatus(`Answered from ${languageLabel}.`);
+        } catch (error) {
+            thinkingNode.remove();
+            console.error('Document chat failed:', error);
+            appendChatMessage('assistant', error.message || 'I could not answer that question right now.');
+            updateDocumentChatStatus('The assistant hit an issue while analyzing the document.');
+        } finally {
+            setDocumentChatLoading(false);
+        }
+    }
+
+    function getActiveOutputLabel() {
+        if (activeLanguage === 'original') {
+            return 'Original OCR';
+        }
+        const button = translationButtons.find(item => item.dataset.language === activeLanguage);
+        return button ? button.innerText.trim() : 'Translated';
+    }
+
+    function openShareModal(mode) {
+        if (!requireLogin()) { return; }
+        if (!outputDiv.innerText.trim()) {
+            showToast('Run OCR prediction before sharing.', true);
+            return;
+        }
+
+        shareMode = mode;
+        shareModalTitle.innerText = mode === 'email' ? 'Send via Email' : 'Send via WhatsApp';
+        shareModalSubtitle.innerText = mode === 'email'
+            ? 'Enter the recipient email and we will send the current converted document as an attachment.'
+            : 'Enter the WhatsApp number and we will open a ready-to-send chat draft with the current document.';
+        shareRecipientInput.placeholder = mode === 'email' ? 'recipient@example.com' : '91XXXXXXXXXX';
+        shareSubmitBtn.innerText = mode === 'email' ? 'Send Email' : 'Open WhatsApp Draft';
+        shareRecipientInput.value = '';
+        shareMessageInput.value = '';
+        shareModal.style.display = 'flex';
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeShareModal() {
+        shareModal.style.display = 'none';
+        document.body.style.overflow = '';
+    }
+
+    function setActiveLanguage(languageKey, label) {
+        activeLanguage = languageKey;
+        translationButtons.forEach(button => {
+            button.classList.toggle('active', button.dataset.language === languageKey);
+        });
+        translationStatus.innerText = `Viewing: ${label}`;
+    }
+
+    function setTranslationLoading(languageKey, loading) {
+        const button = translationButtons.find(item => item.dataset.language === languageKey);
+        if (!button) return;
+        button.classList.toggle('loading', loading);
+        button.disabled = loading;
+    }
+
+    function renderOutputMetrics(stats, processTimeLabel) {
+        const characters = stats?.total_characters ?? 0;
+        const words = stats?.total_words ?? 0;
+        const avgWordLength = stats?.avg_word_length ?? 0;
+        outputMetrics.innerHTML = `
+            <span class="metric-chip"><i class="ri-font-size"></i> Characters: ${Number(characters).toLocaleString()}</span>
+            <span class="metric-chip"><i class="ri-text"></i> Words: ${Number(words).toLocaleString()}</span>
+            <span class="metric-chip"><i class="ri-timer-line"></i> Processing time: ${processTimeLabel}</span>
+            <span class="metric-chip"><i class="ri-stack-line"></i> Format: ${selectedFormat}</span>
+            <span class="metric-chip"><i class="ri-file-list-3-line"></i> Avg word length: ${avgWordLength}</span>
+        `;
+    }
+
+    function applyOutputVersion(languageKey, label) {
+        const text = outputVersions[languageKey];
+        if (!text) {
+            showToast('Translation is not available yet for that language.', true);
+            return;
+        }
+
+        outputDiv.innerText = text;
+        renderOutputMetrics(analyticsByLanguage[languageKey]?.document_stats || {}, analyticsByLanguage[languageKey]?.process_time || '--');
+        renderAnalyticsCharts(
+            analyticsByLanguage[languageKey]?.character_frequency || [],
+            analyticsByLanguage[languageKey]?.word_frequency || []
+        );
+        setActiveLanguage(languageKey, label);
+        syncDocumentChatContext();
+    }
+
+    function renderAnalyticsCharts(characterFrequency = [], wordFrequency = []) {
+        const topChars = characterFrequency.slice(0, 6);
+        const topWords = wordFrequency.slice(0, 6);
+
+        if (charChart) charChart.destroy();
+        charChart = new Chart(document.getElementById('studioCharCanvas'), {
+            type: 'bar',
+            data: {
+                labels: topChars.map(c => c.Character === ' ' ? 'Space' : c.Character),
+                datasets: [{ label: 'Frequency', data: topChars.map(c => c.Frequency), backgroundColor: '#818cf8', borderRadius: 8 }]
+            },
+            options: { responsive: true, maintainAspectRatio: true, plugins: { legend: { labels: { color: '#ccc' } } } }
+        });
+
+        if (wordChart) wordChart.destroy();
+        wordChart = new Chart(document.getElementById('studioWordCanvas'), {
+            type: 'bar',
+            data: {
+                labels: topWords.map(w => w.Word),
+                datasets: [{ label: 'Word Count', data: topWords.map(w => w.Frequency), backgroundColor: '#c084fc', borderRadius: 8 }]
+            },
+            options: { responsive: true, maintainAspectRatio: true, plugins: { legend: { labels: { color: '#ccc' } } } }
+        });
+    }
+
+    async function runPrediction() {
+        if (!requireLogin()) { return; }
+        if (!currentFile) { showToast('Please upload a document first', true); return; }
+
+        const startTime = performance.now();
+        const requestTimeoutMs = 120000;
+        setProcessingState(true);
+
+        try {
+            modal.style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+            resetModalLayers();
+
+            const formData = new FormData();
+            formData.append('file', currentFile);
+            formData.append('format', selectedFormat);
+
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), requestTimeoutMs);
+
+            const uploadPromise = fetch('/api/upload', {
+                method: 'POST',
+                body: formData,
+                signal: controller.signal
+            });
+
+            await animateModalLayer(1, 1500, 'Extracting', 'Analyzing stroke patterns and character boundaries...');
+            await animateModalLayer(2, 2200, 'Processing', 'Transformer model analyzing context and handwriting patterns...');
+            await animateModalLayer(3, 1400, 'Waiting', 'Finalizing OCR result from the server...');
+
+            const response = await uploadPromise.finally(() => clearTimeout(timeoutId));
+            const data = await response.json();
+
+            if (!response.ok || !data.success) {
+                throw new Error(data.error || 'Prediction failed');
+            }
+
+            if (!data.session_id) {
+                throw new Error('Prediction finished, but the server did not return a valid session id.');
+            }
+
+            lastSessionId = data.session_id;
+
+            const extractedText = data.output || '';
+            const stats = data.analytics?.document_stats || {};
+            const totalPages = data.analytics?.total_pages || 1;
+            const processTime = ((performance.now() - startTime) / 1000).toFixed(2);
+            outputVersions = { original: extractedText };
+            analyticsByLanguage = {
+                original: {
+                    character_frequency: data.analytics?.character_frequency || [],
+                    word_frequency: data.analytics?.word_frequency || [],
+                    document_stats: stats,
+                    process_time: `${processTime}s`
+                }
+            };
+
+            outputDiv.innerText = extractedText;
+            confidenceBadge.innerText = `Pages processed: ${totalPages}`;
+            renderOutputMetrics(stats, `${processTime}s`);
+            setActiveLanguage('original', 'Original OCR');
+
+            resultPanel.style.display = 'block';
+            syncDocumentChatContext();
+            requestAnimationFrame(() => {
+                try {
+                    renderAnalyticsCharts(
+                        data.analytics?.character_frequency || [],
+                        data.analytics?.word_frequency || []
+                    );
+                } catch (chartError) {
+                    console.error('Chart rendering failed:', chartError);
+                    showToast('Prediction completed, but analytics charts could not be drawn.', true);
+                }
+            });
+            showToast('Prediction completed successfully', false);
+        } catch (error) {
+            console.error('Prediction error:', error);
+            resultPanel.style.display = 'none';
+            const message = error.name === 'AbortError'
+                ? 'Prediction took too long. Please try a smaller file or check the API configuration.'
+                : (error.message || 'Prediction failed');
+            showToast(message, true);
+        } finally {
+            modal.style.display = 'none';
+            document.body.style.overflow = '';
+            setProcessingState(false);
+        }
+    }
+
+    processBtn.addEventListener('click', runPrediction);
+
+    translationButtons.forEach(button => {
+        button.addEventListener('click', async () => {
+            if (!requireLogin()) { return; }
+            const languageKey = button.dataset.language;
+            const label = button.innerText.trim();
+
+            if (!outputVersions.original) {
+                showToast('Run OCR prediction before translation.', true);
+                return;
+            }
+
+            if (languageKey === 'original') {
+                applyOutputVersion('original', 'Original OCR');
+                return;
+            }
+
+            if (outputVersions[languageKey]) {
+                applyOutputVersion(languageKey, label);
+                return;
+            }
+
+            try {
+                setTranslationLoading(languageKey, true);
+                showToast(`Converting output to ${label}...`, false);
+
+                const response = await fetch('/api/translate', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        text: outputVersions.original,
+                        target_language: languageKey
+                    })
+                });
+
+                const data = await response.json();
+                if (!response.ok || !data.success) {
+                    throw new Error(data.error || 'Translation failed');
+                }
+
+                outputVersions[languageKey] = data.translated_text;
+                analyticsByLanguage[languageKey] = {
+                    character_frequency: data.analytics?.character_frequency || [],
+                    word_frequency: data.analytics?.word_frequency || [],
+                    document_stats: data.analytics?.document_stats || {},
+                    process_time: 'Translated'
+                };
+
+                applyOutputVersion(languageKey, label);
+                showToast(`${label} translation ready`, false);
+            } catch (error) {
+                console.error('Translation error:', error);
+                showToast(error.message || 'Translation failed', true);
+            } finally {
+                setTranslationLoading(languageKey, false);
+            }
+        });
+    });
+
+    copyBtn.addEventListener('click', async () => {
+        if (!outputDiv.innerText.trim()) { showToast('No output available to copy', true); return; }
+        await navigator.clipboard.writeText(outputDiv.innerText);
+        showToast('Copied to clipboard', false);
+    });
+
+    downloadBtn.addEventListener('click', () => {
+        if (!requireLogin()) { return; }
+        if (!lastSessionId) { showToast('Run a prediction before downloading', true); return; }
+        window.location.href = `/api/download/${lastSessionId}?format=${encodeURIComponent(selectedFormat)}`;
+    });
+
+    shareEmailBtn.addEventListener('click', () => openShareModal('email'));
+    shareWhatsAppBtn.addEventListener('click', () => openShareModal('whatsapp'));
+    docChatFab.addEventListener('click', openDocumentChat);
+    docChatCloseBtn.addEventListener('click', closeDocumentChat);
+    docChatForm.addEventListener('submit', async (event) => {
+        event.preventDefault();
+        if (isDocumentChatLoading) { return; }
+        await submitDocumentQuestion(docChatInput.value);
+    });
+    docChatSuggestionButtons.forEach(button => {
+        button.addEventListener('click', async () => {
+            openDocumentChat();
+            docChatInput.value = button.dataset.chatQuestion || '';
+            await submitDocumentQuestion(docChatInput.value);
+        });
+    });
+    shareCloseBtn.addEventListener('click', closeShareModal);
+    shareModal.addEventListener('click', (event) => {
+        if (event.target === shareModal) {
+            closeShareModal();
+        }
+    });
+
+    shareSubmitBtn.addEventListener('click', async () => {
+        const recipient = shareRecipientInput.value.trim();
+        const message = shareMessageInput.value.trim();
+        const currentText = outputDiv.innerText.trim();
+        const languageLabel = getActiveOutputLabel();
+
+        if (!recipient) {
+            showToast('Please enter a recipient first.', true);
+            return;
+        }
+
+        shareSubmitBtn.disabled = true;
+        shareSubmitBtn.style.opacity = '0.7';
+
+        try {
+            if (shareMode === 'email') {
+                const response = await fetch('/api/share/email', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        recipient_email: recipient,
+                        document_text: currentText,
+                        format_type: selectedFormat,
+                        language_label: languageLabel,
+                        source_filename: currentFile?.name || 'converted_document',
+                        message
+                    })
+                });
+                const data = await response.json();
+                if (!response.ok || !data.success) {
+                    throw new Error(data.error || 'Email send failed');
+                }
+                showToast(data.message || 'Document sent successfully', false);
+                closeShareModal();
+            } else {
+                const phone = recipient.replace(/[^\d]/g, '');
+                if (!phone) {
+                    throw new Error('Please enter a valid WhatsApp number');
+                }
+                const previewText = currentText.length > 1200 ? `${currentText.slice(0, 1200)}...` : currentText;
+                const whatsappMessage = [
+                    message || `Sharing a NeuralNotes converted document (${languageLabel}).`,
+                    '',
+                    previewText
+                ].join('\n');
+                window.open(`https://wa.me/${phone}?text=${encodeURIComponent(whatsappMessage)}`, '_blank');
+                showToast('WhatsApp draft opened', false);
+                closeShareModal();
+            }
+        } catch (error) {
+            console.error('Share failed:', error);
+            showToast(error.message || 'Share failed', true);
+        } finally {
+            shareSubmitBtn.disabled = false;
+            shareSubmitBtn.style.opacity = '1';
+        }
+    });
+
+    authTriggerBtn.addEventListener('click', () => openAuthModal('login'));
+    authCloseBtn.addEventListener('click', closeAuthModal);
+    authModal.addEventListener('click', (event) => {
+        if (event.target === authModal) {
+            closeAuthModal();
+        }
+    });
+    authTabs.forEach(tab => tab.addEventListener('click', () => setAuthView(tab.dataset.authView)));
+    authSwitchInline.addEventListener('click', () => setAuthView(authView === 'login' ? 'signup' : 'login'));
+
+    authForm.addEventListener('submit', async (event) => {
+        event.preventDefault();
+
+        const isSignup = authView === 'signup';
+        const payload = {
+            email: authEmail.value.trim(),
+            password: authPassword.value
+        };
+
+        if (isSignup) {
+            payload.full_name = authFullName.value.trim();
+        }
+
+        authSubmitBtn.disabled = true;
+        authSubmitBtn.style.opacity = '0.7';
+
+        try {
+            const response = await fetch(isSignup ? '/api/auth/signup' : '/api/auth/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(payload)
+            });
+            const data = await response.json();
+
+            if (!response.ok || !data.success) {
+                throw new Error(data.error || (isSignup ? 'Signup failed' : 'Login failed'));
+            }
+
+            updateAuthUI(data.user || null);
+            authForm.reset();
+            closeAuthModal();
+            showToast(isSignup ? 'Account created successfully' : 'Logged in successfully', false);
+        } catch (error) {
+            console.error('Auth request failed:', error);
+            showToast(error.message || 'Authentication failed', true);
+        } finally {
+            authSubmitBtn.disabled = false;
+            authSubmitBtn.style.opacity = '1';
+        }
+    });
+
+    logoutBtn.addEventListener('click', async () => {
+        try {
+            const response = await fetch('/api/auth/logout', { method: 'POST' });
+            const data = await response.json();
+            if (!response.ok || !data.success) {
+                throw new Error(data.error || 'Logout failed');
+            }
+            updateAuthUI(null);
+            showToast('Logged out successfully', false);
+        } catch (error) {
+            console.error('Logout failed:', error);
+            showToast(error.message || 'Logout failed', true);
+        }
+    });
+
+    // File handling
+    uploadZone.addEventListener('click', () => fileInput.click());
+    fileInput.addEventListener('change', (e) => { if(e.target.files.length) handleFile(e.target.files[0]); });
+    uploadZone.addEventListener('dragover', e => e.preventDefault());
+    uploadZone.addEventListener('drop', e => {
+        e.preventDefault();
+        const file = e.dataTransfer.files[0];
+        if(file) handleFile(file);
+    });
+    
+    function handleFile(file) {
+        currentFile = file;
+        lastSessionId = null;
+        outputVersions = { original: '' };
+        analyticsByLanguage = {};
+        setActiveLanguage('original', 'Original OCR');
+        clearDocumentChatMessages();
+        syncDocumentChatContext();
+        fileNameSpan.innerText = file.name;
+        fileSizeSpan.innerText = (file.size / 1024).toFixed(1) + " KB";
+        fileMeta.style.display = 'flex';
+        const url = URL.createObjectURL(file);
+        if(file.type.startsWith('image/')) {
+            previewDiv.innerHTML = `<img src="${url}" style="max-width:100%; max-height:280px; border-radius:1rem; object-fit:contain;">`;
+        } else {
+            previewDiv.innerHTML = `<div style="text-align:center;"><i class="ri-file-pdf-line" style="font-size:3rem;"></i><br>PDF ready: ${file.name}</div>`;
+        }
+        resultPanel.style.display = 'none';
+    }
+    
+    clearBtn.addEventListener('click', () => {
+        currentFile = null;
+        lastSessionId = null;
+        outputVersions = { original: '' };
+        analyticsByLanguage = {};
+        setActiveLanguage('original', 'Original OCR');
+        clearDocumentChatMessages();
+        syncDocumentChatContext();
+        fileMeta.style.display = 'none';
+        previewDiv.innerHTML = `<div style="text-align:center;"><i class="ri-image-add-line" style="font-size:2rem;"></i><br>No document loaded</div>`;
+        resultPanel.style.display = 'none';
+    });
+    
+    function showToast(msg, isErr=false) {
+        const toast = document.getElementById('toastPremium');
+        toast.innerText = msg;
+        toast.style.transform = 'translateX(0%)';
+        toast.style.borderLeftColor = isErr ? '#ef4444' : '#10b981';
+        setTimeout(() => toast.style.transform = 'translateX(150%)', 2800);
+    }
+    
+    showToast("NeuralNotes AI Enterprise ready — upload document", false);
+    setAuthView('login');
+    updateAuthUI(null);
+    clearDocumentChatMessages();
+    syncDocumentChatContext();
+    refreshAuthState();
+</script>
+</body>
+</html>
