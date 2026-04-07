@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>NeuralNotes AI | Enterprise Handwriting Intelligence Platform</title>
     <!-- Fonts & Icons -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -23,6 +23,12 @@
             background: #0a0c18;
             overflow-x: hidden;
             color: #ffffff;
+        }
+        img, canvas {
+            max-width: 100%;
+        }
+        button, input, textarea {
+            font: inherit;
         }
 
         /* Premium Animated Gradient Background */
@@ -409,11 +415,43 @@
             padding: 4rem 0 5rem;
             gap: 3rem;
         }
+        .hero-left {
+            flex: 1 1 620px;
+            min-width: 0;
+        }
         .hero-left h1 {
             font-size: 3.8rem;
             font-weight: 800;
             line-height: 1.2;
             margin-bottom: 1.5rem;
+        }
+        .hero-copy {
+            color: #a5b0d0;
+            font-size: 1.1rem;
+            max-width: 60ch;
+            line-height: 1.7;
+        }
+        .hero-kicker {
+            display: inline-flex;
+            gap: 8px;
+            background: rgba(99,102,241,0.2);
+            border-radius: 40px;
+            padding: 0.4rem 1.2rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+        .hero-cta {
+            margin-top: 2rem;
+        }
+        .hero-visual {
+            flex: 0.8 1 320px;
+            min-width: 0;
+            text-align: center;
+        }
+        .hero-visual i {
+            font-size: clamp(4.5rem, 14vw, 8rem);
+            color: #4f46e5;
+            filter: drop-shadow(0 0 30px #4f46e5);
         }
         .gradient-hero {
             background: linear-gradient(135deg, #c4b5fd, #a78bfa, #e879f9);
@@ -437,6 +475,18 @@
         .stat-card span {
             font-size: 2rem;
             font-weight: 800;
+        }
+        .section-card {
+            padding: 2rem;
+            text-align: center;
+            margin: 2rem 0;
+        }
+        .brand-row {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-top: 1rem;
+            flex-wrap: wrap;
         }
 
         /* Features Grid */
@@ -486,6 +536,31 @@
             background: rgba(79,70,229,0.15);
             border-color: #a78bfa;
         }
+        .input-methods {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 0.8rem;
+            margin-top: 1rem;
+        }
+        .input-method-btn {
+            border: 1px solid rgba(167, 139, 250, 0.22);
+            background: rgba(11, 15, 30, 0.75);
+            color: #f5f3ff;
+            padding: 0.95rem 1rem;
+            border-radius: 1rem;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.55rem;
+            font-weight: 600;
+            transition: 0.25s ease;
+        }
+        .input-method-btn:hover {
+            transform: translateY(-1px);
+            border-color: rgba(196, 181, 253, 0.5);
+            box-shadow: 0 14px 28px -20px rgba(167, 139, 250, 0.8);
+        }
         .format-pills {
             display: flex;
             gap: 1rem;
@@ -510,6 +585,57 @@
             padding: 1rem;
             min-height: 400px;
         }
+        .studio-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        .ready-badge {
+            background: rgba(16,185,129,0.2);
+            padding: 0.3rem 1rem;
+            border-radius: 2rem;
+        }
+        .file-meta-bar {
+            margin-top: 1rem;
+            background: #0c1022;
+            border-radius: 2rem;
+            padding: 0.7rem 1rem;
+            display: none;
+            justify-content: space-between;
+            align-items: center;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+        .file-meta-summary {
+            min-width: 0;
+            word-break: break-word;
+        }
+        .preview-toolbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 0.8rem;
+            flex-wrap: wrap;
+        }
+        .preview-toolbar-actions {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+        .preview-frame {
+            min-height: 280px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #050811;
+            border-radius: 1rem;
+            padding: 1rem;
+        }
         .btn-glow-advanced {
             background: linear-gradient(95deg, #4f46e5, #a855f7);
             width: 100%;
@@ -525,6 +651,100 @@
         .btn-glow-advanced:hover {
             transform: scale(1.02);
             box-shadow: 0 0 20px #4f46e5;
+        }
+        .camera-modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(2, 6, 23, 0.82);
+            backdrop-filter: blur(16px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 3250;
+            padding: 1rem;
+        }
+        .camera-card {
+            width: min(760px, 100%);
+            border-radius: 1.8rem;
+            overflow: hidden;
+            border: 1px solid rgba(125, 211, 252, 0.18);
+            background: linear-gradient(180deg, rgba(10, 13, 28, 0.98), rgba(6, 10, 22, 0.98));
+            box-shadow: 0 40px 80px -40px rgba(0, 0, 0, 0.85);
+        }
+        .camera-card-head {
+            padding: 1.2rem 1.4rem 0.8rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+        }
+        .camera-card-body {
+            padding: 0.6rem 1.4rem 1.4rem;
+            display: grid;
+            gap: 1rem;
+        }
+        .camera-stage {
+            position: relative;
+            min-height: 320px;
+            border-radius: 1.4rem;
+            overflow: hidden;
+            background:
+                radial-gradient(circle at top right, rgba(14, 165, 233, 0.12), transparent 28%),
+                linear-gradient(180deg, rgba(8, 11, 26, 0.98), rgba(2, 6, 23, 0.98));
+            border: 1px solid rgba(125, 211, 252, 0.14);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .camera-stage video,
+        .camera-stage canvas {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+        .camera-stage canvas {
+            display: none;
+        }
+        .camera-empty {
+            padding: 1.5rem;
+            text-align: center;
+            color: #cbd5f5;
+            line-height: 1.6;
+        }
+        .camera-hint {
+            font-size: 0.85rem;
+            color: #93c5fd;
+        }
+        .camera-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.8rem;
+        }
+        .camera-primary {
+            border: none;
+            border-radius: 1rem;
+            padding: 0.95rem 1.1rem;
+            font-weight: 700;
+            color: #fff;
+            cursor: pointer;
+            background: linear-gradient(135deg, #0ea5e9, #2563eb);
+            flex: 1 1 180px;
+        }
+        .camera-secondary {
+            border: 1px solid rgba(125, 211, 252, 0.18);
+            border-radius: 1rem;
+            padding: 0.95rem 1.1rem;
+            font-weight: 600;
+            color: #fff;
+            cursor: pointer;
+            background: rgba(255,255,255,0.05);
+            flex: 1 1 180px;
+        }
+        .camera-status {
+            font-size: 0.85rem;
+            color: #bfdbfe;
+            min-height: 20px;
         }
 
         /* ========== CENTRALIZED PREDICTION MODAL ========== */
@@ -882,6 +1102,36 @@
             padding: 0.3rem 1rem;
             font-size: 0.8rem;
         }
+        .result-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+            margin-top: 1rem;
+            flex-wrap: wrap;
+        }
+        .analytics-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+        .chart-card {
+            max-height: 200px;
+            background: rgba(0,0,0,0.3);
+            border-radius: 1rem;
+            padding: 0.5rem;
+        }
+        .solutions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+        .site-footer {
+            text-align: center;
+            margin: 3rem 0 2rem;
+            color: #6a75a5;
+        }
         .toast-premium {
             position: fixed;
             bottom: 30px;
@@ -1089,8 +1339,149 @@
             .studio-grid { grid-template-columns: 1fr; }
             .hero-left h1 { font-size: 2.3rem; }
             .container { padding: 0 1.2rem; }
+            .navbar {
+                justify-content: center;
+            }
+            .nav-links {
+                justify-content: center;
+            }
+            .hero {
+                padding: 3rem 0 4rem;
+            }
+            .hero-visual {
+                width: 100%;
+                order: -1;
+            }
         }
         @media (max-width: 680px) {
+            .container {
+                padding: 0 0.9rem;
+            }
+            .navbar {
+                padding: 1rem 0;
+            }
+            .logo {
+                width: 100%;
+                justify-content: center;
+            }
+            .logo h1 {
+                font-size: 1.45rem;
+            }
+            .nav-links,
+            .auth-shell {
+                width: 100%;
+                justify-content: center;
+            }
+            .nav-link,
+            .btn-primary,
+            .btn-auth {
+                width: 100%;
+                text-align: center;
+                justify-content: center;
+            }
+            .user-pill {
+                width: 100%;
+                justify-content: center;
+            }
+            .hero {
+                gap: 2rem;
+                padding: 2.4rem 0 3rem;
+            }
+            .hero-left h1 {
+                font-size: 1.9rem;
+            }
+            .hero-copy {
+                font-size: 0.98rem;
+            }
+            .hero-stats {
+                gap: 0.85rem;
+            }
+            .stat-card {
+                flex: 1 1 140px;
+                padding: 0.8rem 1rem;
+            }
+            .features-grid {
+                grid-template-columns: 1fr;
+                gap: 1.1rem;
+                margin: 3rem 0;
+            }
+            .feature-card,
+            .studio-container,
+            .output-premium,
+            .section-card,
+            .modal-card,
+            .auth-panel,
+            .share-card-body,
+            .share-card-head {
+                padding: 1.2rem;
+            }
+            .auth-switcher {
+                width: 100%;
+            }
+            .auth-tab {
+                flex: 1 1 0;
+            }
+            .auth-panel-top,
+            .translation-header,
+            .share-header,
+            .modal-layer-header {
+                align-items: flex-start;
+            }
+            .studio-head,
+            .preview-toolbar {
+                align-items: stretch;
+            }
+            .ready-badge,
+            .preview-toolbar-actions {
+                width: 100%;
+                justify-content: center;
+            }
+            .file-meta-bar {
+                border-radius: 1.2rem;
+            }
+            .upload-zone-advanced,
+            .preview-advanced {
+                padding: 1.2rem;
+            }
+            .input-methods {
+                grid-template-columns: 1fr;
+            }
+            .preview-advanced {
+                min-height: auto;
+            }
+            .result-actions,
+            .share-actions {
+                justify-content: stretch;
+            }
+            .result-actions button,
+            .share-chip,
+            .language-chip {
+                width: 100%;
+                justify-content: center;
+            }
+            .analytics-grid,
+            .solutions-grid {
+                grid-template-columns: 1fr;
+            }
+            .modal-card {
+                width: 100%;
+                border-radius: 1.4rem;
+            }
+            .modal-icon {
+                width: 58px;
+                height: 58px;
+            }
+            .modal-title {
+                font-size: 1.2rem;
+            }
+            .share-card,
+            .auth-card,
+            .camera-card {
+                border-radius: 1.4rem;
+            }
+            .doc-chat-message {
+                max-width: 100%;
+            }
             .toast-premium {
                 right: 16px;
                 left: 16px;
@@ -1115,6 +1506,52 @@
             }
             .doc-chat-send {
                 width: 100%;
+            }
+        }
+        @media (max-width: 480px) {
+            .hero-left h1 {
+                font-size: 1.65rem;
+            }
+            .hero-stats {
+                flex-direction: column;
+            }
+            .format-pills {
+                gap: 0.6rem;
+            }
+            .pill-advanced {
+                width: 100%;
+                text-align: center;
+            }
+            .metric-chip {
+                width: 100%;
+                text-align: center;
+            }
+            .camera-card-head,
+            .camera-card-body {
+                padding-left: 1rem;
+                padding-right: 1rem;
+            }
+            .camera-stage {
+                min-height: 250px;
+            }
+            .camera-actions {
+                flex-direction: column;
+            }
+            .doc-chat-panel {
+                left: 8px;
+                right: 8px;
+                bottom: 82px;
+                height: min(74vh, 600px);
+                border-radius: 22px;
+            }
+            .doc-chat-head,
+            .doc-chat-input-wrap,
+            .doc-chat-body {
+                padding-left: 0.85rem;
+                padding-right: 0.85rem;
+            }
+            .site-footer {
+                font-size: 0.9rem;
             }
         }
     </style>
@@ -1231,6 +1668,34 @@
         </div>
     </div>
 </div>
+<div class="camera-modal" id="cameraModal">
+    <div class="camera-card">
+        <div class="camera-card-head">
+            <div>
+                <div class="share-title">Live Camera Capture</div>
+                <div class="share-subtitle">Capture a handwritten page directly from your camera and use it like an uploaded image.</div>
+            </div>
+            <button class="share-close" id="cameraCloseBtn" type="button"><i class="ri-close-line"></i></button>
+        </div>
+        <div class="camera-card-body">
+            <div class="camera-stage" id="cameraStage">
+                <video id="cameraVideo" autoplay playsinline></video>
+                <canvas id="cameraCanvas"></canvas>
+                <div class="camera-empty" id="cameraEmpty">
+                    <i class="ri-camera-lens-line" style="font-size:2.2rem;"></i><br>
+                    Start the camera to capture a handwritten document.
+                </div>
+            </div>
+            <div class="camera-status" id="cameraStatus">Camera is idle.</div>
+            <div class="camera-actions">
+                <button class="camera-primary" id="cameraStartBtn" type="button"><i class="ri-camera-line"></i> Start Camera</button>
+                <button class="camera-primary" id="cameraCaptureBtn" type="button"><i class="ri-camera-3-line"></i> Capture Photo</button>
+                <button class="camera-secondary" id="cameraUseBtn" type="button"><i class="ri-check-line"></i> Use Captured Image</button>
+                <button class="camera-secondary" id="cameraRetakeBtn" type="button"><i class="ri-restart-line"></i> Retake</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 <div class="doc-chat-panel" id="docChatPanel">
     <div class="doc-chat-head">
@@ -1293,22 +1758,22 @@
     <div id="homePage" class="page active-page">
         <div class="hero">
             <div class="hero-left">
-                <div style="display:inline-flex; gap:8px; background:rgba(99,102,241,0.2); border-radius:40px; padding:0.4rem 1.2rem; margin-bottom:1.5rem;">
+                <div class="hero-kicker">
                     <i class="ri-flashlight-fill"></i> Next-gen Handwriting Intelligence v4.0
                 </div>
                 <h1>Transform handwritten notes into <span class="gradient-hero">digital intelligence</span> with 99.4% accuracy</h1>
-                <p style="color: #a5b0d0; font-size: 1.1rem;">Advanced transformer architecture deciphers cursive, mathematical notation, and historical manuscripts in milliseconds.</p>
+                <p class="hero-copy">Advanced transformer architecture deciphers cursive, mathematical notation, and historical manuscripts in milliseconds.</p>
                 <div class="hero-stats">
                     <div class="stat-card"><span>99.4%</span><br><small>ACCURACY</small></div>
                     <div class="stat-card"><span>12+</span><br><small>FORMATS</small></div>
                     <div class="stat-card"><span>&lt;0.4s</span><br><small>PER PAGE</small></div>
                 </div>
-                <div style="margin-top: 2rem;">
+                <div class="hero-cta">
                     <button class="btn-primary" id="homeStudioBtn"><i class="ri-flask-line"></i> Start Analysis</button>
                 </div>
             </div>
-            <div style="flex:0.8; text-align:center;">
-                <i class="ri-file-pdf-line" style="font-size: 8rem; color:#4f46e5; filter:drop-shadow(0 0 30px #4f46e5);"></i>
+            <div class="hero-visual">
+                <i class="ri-file-pdf-line"></i>
             </div>
         </div>
 
@@ -1319,9 +1784,9 @@
             <div class="feature-card"><i class="ri-stack-line" style="font-size:2.5rem;"></i><h3>Batch Processing</h3><p>Upload multiple documents for bulk analysis.</p></div>
         </div>
 
-        <div class="glass-premium" style="padding:2rem; text-align:center; margin:2rem 0;">
+        <div class="glass-premium section-card">
             <h3>Trusted by 5,000+ institutions worldwide</h3>
-            <div style="display:flex; justify-content:center; gap:2rem; margin-top:1rem; flex-wrap:wrap;">
+            <div class="brand-row">
                 <span><i class="ri-hospital-line"></i> Healthcare</span>
                 <span><i class="ri-bank-line"></i> Legal</span>
                 <span><i class="ri-history-line"></i> Archives</span>
@@ -1333,20 +1798,24 @@
     <!-- PREDICTION STUDIO PAGE -->
     <div id="studioPage" class="page">
         <div class="studio-container">
-            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; margin-bottom:1.5rem;">
+            <div class="studio-head">
                 <h2><i class="ri-microscope-line"></i> Neural Prediction Studio</h2>
-                <div style="background:rgba(16,185,129,0.2); padding:0.3rem 1rem; border-radius:2rem;"><i class="ri-circle-fill" style="font-size:0.6rem; color:#10b981;"></i> Ready for inference</div>
+                <div class="ready-badge"><i class="ri-circle-fill" style="font-size:0.6rem; color:#10b981;"></i> Ready for inference</div>
             </div>
             <div class="studio-grid">
                 <div>
                     <div class="upload-zone-advanced" id="studioUploadZone">
                         <i class="ri-upload-cloud-2-line" style="font-size:3rem; color:#a78bfa;"></i>
-                        <h3 style="margin:0.8rem 0;">Upload handwritten document</h3>
-                        <p>PDF, JPG, PNG supported</p>
+                        <h3 style="margin:0.8rem 0;">Upload or capture handwritten document</h3>
+                        <p>PDF, JPG, PNG, JPEG, and live camera capture supported</p>
                         <input type="file" id="pdfStudioInput" accept=".pdf,.jpg,.png,.jpeg" style="display:none;">
                     </div>
-                    <div id="studioFileMeta" style="margin-top:1rem; background:#0c1022; border-radius:2rem; padding:0.7rem 1rem; display:none; justify-content:space-between;">
-                        <span><i class="ri-file-pdf-line"></i> <span id="studioFileName"></span> (<span id="studioFileSize"></span>)</span>
+                    <div class="input-methods">
+                        <button class="input-method-btn" id="uploadFileBtn" type="button"><i class="ri-folder-open-line"></i> Choose File</button>
+                        <button class="input-method-btn" id="openCameraBtn" type="button"><i class="ri-camera-line"></i> Open Camera</button>
+                    </div>
+                    <div id="studioFileMeta" class="file-meta-bar">
+                        <span class="file-meta-summary"><i class="ri-file-pdf-line"></i> <span id="studioFileName"></span> (<span id="studioFileSize"></span>)</span>
                         <button id="clearStudioFileBtn" style="background:none; border:none; color:#f87171; cursor:pointer;"><i class="ri-close-circle-line"></i></button>
                     </div>
                     <div class="format-pills">
@@ -1357,13 +1826,13 @@
                     <button class="btn-glow-advanced" id="studioProcessTrigger"><i class="ri-flask-line"></i> Run Neural Prediction</button>
                 </div>
                 <div class="preview-advanced">
-                    <div style="display:flex; justify-content:space-between; margin-bottom:0.8rem;">
+                    <div class="preview-toolbar">
                         <span><i class="ri-image-edit-line"></i> Document preview</span>
-                        <div><button id="studioPrevPage" style="background:#181e32; border:none; padding:0.2rem 0.7rem; border-radius:1rem;"><i class="ri-arrow-left-s-line"></i></button>
+                        <div class="preview-toolbar-actions"><button id="studioPrevPage" style="background:#181e32; border:none; padding:0.2rem 0.7rem; border-radius:1rem;"><i class="ri-arrow-left-s-line"></i></button>
                         <span id="studioPageIndicator">Page 1 / 1</span>
                         <button id="studioNextPage" style="background:#181e32; border:none; padding:0.2rem 0.7rem; border-radius:1rem;"><i class="ri-arrow-right-s-line"></i></button></div>
                     </div>
-                    <div id="studioPreviewImg" style="min-height:280px; display:flex; align-items:center; justify-content:center; background:#050811; border-radius:1rem;">
+                    <div id="studioPreviewImg" class="preview-frame">
                         <div style="text-align:center;"><i class="ri-image-add-line" style="font-size:2rem;"></i><br>No document loaded</div>
                     </div>
                 </div>
@@ -1411,14 +1880,14 @@
                             <button class="share-chip" id="shareWhatsAppBtn" type="button"><i class="ri-whatsapp-line"></i> Send to WhatsApp</button>
                         </div>
                     </div>
-                    <div style="display:flex; gap:1rem; justify-content:flex-end; margin-top:1rem;">
+                    <div class="result-actions">
                         <button id="studioCopyBtn" style="background:#1e2038; border:1px solid #2d2f4e; border-radius:2rem; padding:0.5rem 1.2rem; cursor:pointer;"><i class="ri-clipboard-line"></i> Copy</button>
                         <button id="studioDownloadBtn" style="background:#1e2038; border:1px solid #2d2f4e; border-radius:2rem; padding:0.5rem 1.2rem; cursor:pointer;"><i class="ri-download-line"></i> Download</button>
                     </div>
                 </div>
-                <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin-top:1.5rem;">
-                    <canvas id="studioCharCanvas" style="max-height:200px; background:rgba(0,0,0,0.3); border-radius:1rem; padding:0.5rem;"></canvas>
-                    <canvas id="studioWordCanvas" style="max-height:200px; background:rgba(0,0,0,0.3); border-radius:1rem; padding:0.5rem;"></canvas>
+                <div class="analytics-grid">
+                    <canvas id="studioCharCanvas" class="chart-card"></canvas>
+                    <canvas id="studioWordCanvas" class="chart-card"></canvas>
                 </div>
             </div>
         </div>
@@ -1426,9 +1895,9 @@
 
     <!-- SOLUTIONS PAGE -->
     <div id="solutionsPage" class="page">
-        <div class="glass-premium" style="padding:3rem; text-align:center; margin:2rem 0;">
+        <div class="glass-premium section-card" style="padding:3rem;">
             <h2 style="font-size:2.5rem;">Enterprise Solutions</h2>
-            <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(250px,1fr)); gap:2rem; margin-top:3rem;">
+            <div class="solutions-grid">
                 <div><i class="ri-hospital-line" style="font-size:2.5rem;"></i><h3>Healthcare</h3><p>Medical notes & prescription digitization</p></div>
                 <div><i class="ri-bank-line" style="font-size:2.5rem;"></i><h3>Legal</h3><p>Handwritten depositions & evidence</p></div>
                 <div><i class="ri-history-line" style="font-size:2.5rem;"></i><h3>Archives</h3><p>Historical manuscript preservation</p></div>
@@ -1437,7 +1906,7 @@
         </div>
     </div>
 
-    <div style="text-align:center; margin:3rem 0 2rem; color:#6a75a5;">© 2026 NeuralNotes AI — Redefining handwritten intelligence</div>
+    <div class="site-footer">© 2026 NeuralNotes AI - Redefining handwritten intelligence</div>
 </div>
 
 <script>
@@ -1474,6 +1943,8 @@
 
     const uploadZone = document.getElementById('studioUploadZone');
     const fileInput = document.getElementById('pdfStudioInput');
+    const uploadFileBtn = document.getElementById('uploadFileBtn');
+    const openCameraBtn = document.getElementById('openCameraBtn');
     const fileMeta = document.getElementById('studioFileMeta');
     const fileNameSpan = document.getElementById('studioFileName');
     const fileSizeSpan = document.getElementById('studioFileSize');
@@ -1497,6 +1968,16 @@
     const shareSubmitBtn = document.getElementById('shareSubmitBtn');
     const shareEmailBtn = document.getElementById('shareEmailBtn');
     const shareWhatsAppBtn = document.getElementById('shareWhatsAppBtn');
+    const cameraModal = document.getElementById('cameraModal');
+    const cameraCloseBtn = document.getElementById('cameraCloseBtn');
+    const cameraStartBtn = document.getElementById('cameraStartBtn');
+    const cameraCaptureBtn = document.getElementById('cameraCaptureBtn');
+    const cameraUseBtn = document.getElementById('cameraUseBtn');
+    const cameraRetakeBtn = document.getElementById('cameraRetakeBtn');
+    const cameraVideo = document.getElementById('cameraVideo');
+    const cameraCanvas = document.getElementById('cameraCanvas');
+    const cameraEmpty = document.getElementById('cameraEmpty');
+    const cameraStatus = document.getElementById('cameraStatus');
     const authModal = document.getElementById('authModal');
     const authTriggerBtn = document.getElementById('authTriggerBtn');
     const authCloseBtn = document.getElementById('authCloseBtn');
@@ -1537,6 +2018,8 @@
     let shareMode = 'email';
     let documentChatHistory = [];
     let isDocumentChatLoading = false;
+    let cameraStream = null;
+    let capturedCameraBlob = null;
 
     // Modal elements
     const modal = document.getElementById('predictionModal');
@@ -1549,6 +2032,109 @@
     const modalDetail1 = document.getElementById('modalDetail1');
     const modalDetail2 = document.getElementById('modalDetail2');
     const modalDetail3 = document.getElementById('modalDetail3');
+
+    function updateCameraStatus(message, isError = false) {
+        cameraStatus.innerText = message;
+        cameraStatus.style.color = isError ? '#fca5a5' : '#bfdbfe';
+    }
+
+    function stopCameraStream() {
+        if (cameraStream) {
+            cameraStream.getTracks().forEach(track => track.stop());
+            cameraStream = null;
+        }
+        cameraVideo.srcObject = null;
+    }
+
+    function resetCameraCaptureState() {
+        capturedCameraBlob = null;
+        cameraCanvas.style.display = 'none';
+        cameraVideo.style.display = 'block';
+        cameraEmpty.style.display = cameraStream ? 'none' : 'block';
+        cameraUseBtn.disabled = true;
+    }
+
+    async function startCameraStream() {
+        if (!navigator.mediaDevices?.getUserMedia) {
+            updateCameraStatus('Camera access is not supported in this browser.', true);
+            return;
+        }
+
+        try {
+            stopCameraStream();
+            resetCameraCaptureState();
+            const stream = await navigator.mediaDevices.getUserMedia({
+                video: { facingMode: 'environment' },
+                audio: false
+            });
+            cameraStream = stream;
+            cameraVideo.srcObject = stream;
+            cameraEmpty.style.display = 'none';
+            updateCameraStatus('Camera is live. Position the document and capture the photo.');
+        } catch (error) {
+            console.error('Camera start failed:', error);
+            updateCameraStatus('Unable to access the camera. Please allow permission and try again.', true);
+        }
+    }
+
+    function openCameraModal() {
+        cameraModal.style.display = 'flex';
+        document.body.style.overflow = 'hidden';
+        resetCameraCaptureState();
+        updateCameraStatus('Camera is idle.');
+        startCameraStream();
+    }
+
+    function closeCameraModal() {
+        cameraModal.style.display = 'none';
+        document.body.style.overflow = '';
+        stopCameraStream();
+        resetCameraCaptureState();
+        updateCameraStatus('Camera is idle.');
+    }
+
+    async function captureCameraFrame() {
+        if (!cameraStream) {
+            await startCameraStream();
+            if (!cameraStream) return;
+        }
+
+        const width = cameraVideo.videoWidth;
+        const height = cameraVideo.videoHeight;
+
+        if (!width || !height) {
+            updateCameraStatus('Camera is still loading. Please wait a moment and try again.', true);
+            return;
+        }
+
+        cameraCanvas.width = width;
+        cameraCanvas.height = height;
+        const context = cameraCanvas.getContext('2d');
+        context.drawImage(cameraVideo, 0, 0, width, height);
+        cameraCanvas.style.display = 'block';
+        cameraVideo.style.display = 'none';
+
+        capturedCameraBlob = await new Promise(resolve => cameraCanvas.toBlob(resolve, 'image/jpeg', 0.92));
+        cameraUseBtn.disabled = !capturedCameraBlob;
+        updateCameraStatus(capturedCameraBlob
+            ? 'Photo captured. Use it directly or retake the shot.'
+            : 'Capture failed. Please try again.', !capturedCameraBlob);
+    }
+
+    function useCapturedCameraImage() {
+        if (!capturedCameraBlob) {
+            updateCameraStatus('Capture a photo before using it.', true);
+            return;
+        }
+
+        const timestamp = Date.now();
+        const capturedFile = new File([capturedCameraBlob], `camera-capture-${timestamp}.jpg`, {
+            type: 'image/jpeg'
+        });
+        handleFile(capturedFile);
+        closeCameraModal();
+        showToast('Camera image added successfully', false);
+    }
 
     function resetModalLayers() {
         modalStatus1.innerText = 'Pending';
@@ -1887,7 +2473,7 @@
 
     async function runPrediction() {
         if (!requireLogin()) { return; }
-        if (!currentFile) { showToast('Please upload a document first', true); return; }
+        if (!currentFile) { showToast('Please upload or capture a document first', true); return; }
 
         const startTime = performance.now();
         const requestTimeoutMs = 120000;
@@ -2071,6 +2657,19 @@
             closeShareModal();
         }
     });
+    cameraCloseBtn.addEventListener('click', closeCameraModal);
+    cameraModal.addEventListener('click', (event) => {
+        if (event.target === cameraModal) {
+            closeCameraModal();
+        }
+    });
+    cameraStartBtn.addEventListener('click', startCameraStream);
+    cameraCaptureBtn.addEventListener('click', captureCameraFrame);
+    cameraUseBtn.addEventListener('click', useCapturedCameraImage);
+    cameraRetakeBtn.addEventListener('click', async () => {
+        resetCameraCaptureState();
+        await startCameraStream();
+    });
 
     shareSubmitBtn.addEventListener('click', async () => {
         const recipient = shareRecipientInput.value.trim();
@@ -2202,6 +2801,8 @@
 
     // File handling
     uploadZone.addEventListener('click', () => fileInput.click());
+    uploadFileBtn.addEventListener('click', () => fileInput.click());
+    openCameraBtn.addEventListener('click', openCameraModal);
     fileInput.addEventListener('change', (e) => { if(e.target.files.length) handleFile(e.target.files[0]); });
     uploadZone.addEventListener('dragover', e => e.preventDefault());
     uploadZone.addEventListener('drop', e => {
@@ -2211,6 +2812,8 @@
     });
     
     function handleFile(file) {
+        stopCameraStream();
+        resetCameraCaptureState();
         currentFile = file;
         lastSessionId = null;
         outputVersions = { original: '' };
@@ -2221,6 +2824,7 @@
         fileNameSpan.innerText = file.name;
         fileSizeSpan.innerText = (file.size / 1024).toFixed(1) + " KB";
         fileMeta.style.display = 'flex';
+        fileInput.value = '';
         const url = URL.createObjectURL(file);
         if(file.type.startsWith('image/')) {
             previewDiv.innerHTML = `<img src="${url}" style="max-width:100%; max-height:280px; border-radius:1rem; object-fit:contain;">`;
@@ -2231,6 +2835,8 @@
     }
     
     clearBtn.addEventListener('click', () => {
+        stopCameraStream();
+        resetCameraCaptureState();
         currentFile = null;
         lastSessionId = null;
         outputVersions = { original: '' };
@@ -2239,6 +2845,7 @@
         clearDocumentChatMessages();
         syncDocumentChatContext();
         fileMeta.style.display = 'none';
+        fileInput.value = '';
         previewDiv.innerHTML = `<div style="text-align:center;"><i class="ri-image-add-line" style="font-size:2rem;"></i><br>No document loaded</div>`;
         resultPanel.style.display = 'none';
     });
