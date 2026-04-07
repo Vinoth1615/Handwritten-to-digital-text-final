@@ -7,3 +7,6 @@ markdownify
 plotly
 pypandoc
 Pillow
+opencv-python
+numpy
+pandas
